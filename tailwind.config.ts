@@ -7,7 +7,21 @@ export default {
     "./src/pages/**/*.{ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: {
+          DEFAULT: "#af3338",
+          foreground: "#ffffff",
+        },
+        secondary: {
+          DEFAULT: "#8ba755",
+          foreground: "#ffffff",
+        },
+      },
+      fontFamily: {
+        sans: ["var(--font-poppins)", "Poppins", "sans-serif"],
+      },
+    },
   },
   plugins: [],
 } satisfies Config;
