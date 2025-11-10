@@ -1,3 +1,7 @@
+"use client"
+
+import { HelpButton } from "@/lib/components/help-button";
+import { FileUploader } from "@/lib/components/upload";
 import Image from "next/image";
 
 export default function Home() {
