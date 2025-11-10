@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dossier, TypeCle } from '@/types/types';
 
 interface PaginationProps {
@@ -9,7 +9,6 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-// Données mockées
 const projetsMock: Dossier[] = [
   {
     id: 1,
@@ -115,11 +114,30 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
   );
 };
 
-// Composant principal
 const PageProjets = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const itemsPerPage = 5;
-  
+
+  // Simuler le chargement des données
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Simulation d'un appel API
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Erreur lors du chargement des projets");
+        console.error("Erreur:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentProjets = projetsMock.slice(indexOfFirstItem, indexOfLastItem);
@@ -129,16 +147,46 @@ const PageProjets = () => {
     console.log('Navigation vers le projet:', projetId);
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#af3338] border-t-transparent mx-auto"></div>
+          <p className="mt-6 text-gray-600 font-medium">Chargement des projets...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="text-center bg-white p-8 rounded-2xl shadow-lg max-w-md">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+          <p className="text-[#af3338] mb-6 font-semibold text-lg">{error}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="bg-[#af3338] hover:bg-[#8f2a2e] text-white px-6 py-2 rounded-lg font-medium transition-colors"
+          >
+            Réessayer
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 space-y-8">
-        {/* En-tête avec couleur primaire */}
         <div className="mb-2">
           <h1 className="text-3xl font-bold text-[#af3338] mb-2">Mes demandes d'homologation</h1>
           <div className="w-20 h-1 bg-[#8ba755] rounded-full"></div>
         </div>
 
-        {/* Statistiques avec espacement amélioré */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-[#af3338] hover:shadow-md transition-shadow duration-200">
             <h3 className="text-lg font-semibold text-gray-800 mb-2">Total des dossiers</h3>
@@ -158,9 +206,7 @@ const PageProjets = () => {
           </div>
         </div>
 
-        {/* Tableau avec espacement avant */}
         <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100 mt-8">
-          {/* En-tête du tableau avec couleur secondaire */}
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-[#8ba755]">
               <tr>
