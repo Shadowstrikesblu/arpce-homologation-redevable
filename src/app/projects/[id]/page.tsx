@@ -28,7 +28,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useParams, useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { use, useMemo } from "react";
 import projetsMock from "@/lib/mock/dossier.mock";
 import { ArrowLeft } from "lucide-react";
 
@@ -53,14 +53,19 @@ const getStatutBadgeClasses = (code?: string) => {
   }
 };
 
-const DossierDetails = () => {
+interface Props {
+  params: Promise<{ id: string }>
+}
+
+const DossierDetails = ({params} : Props ) => {
   
   const router = useRouter()
-  const { id =  1 } = useParams();
+  const { id } = use(params)
+
 
   const dossier = useMemo(
     () => projetsMock.find((prev) => prev.id === Number(id)),
-    [id]
+    [params]
   );
 
   if(!dossier) return;
@@ -85,6 +90,9 @@ const DossierDetails = () => {
         <div className="flex items-start justify-between gap-4">
           <div>
             <div>
+              <ArrowLeft/>
+            </div>
+            <div>
               <p className="text-sm text-gray-500 mb-1">Dossier n°</p>
               <h1 className="text-3xl font-bold text-[#af3338]">
                 {dossier.numero}
@@ -95,10 +103,6 @@ const DossierDetails = () => {
                   {formatDate(dossier.dateOuverture)}
                 </span>
               </p>
-            </div>
-
-            <div>
-              <ArrowLeft/>
             </div>
           </div>
 
