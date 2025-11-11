@@ -4,6 +4,7 @@ import * as React from "react"
 import { Upload, ClipboardPaste, MousePointerClick } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { HelpButton } from "./help-button"
 
 
 export function FileUploader({
@@ -22,6 +23,8 @@ export function FileUploader({
 
   const handleFiles = React.useCallback(
     (fileList: FileList | null) => {
+
+      if(!multiple && fileCount >= 1) return setError("vous ne pouvez televerser qu'une lettre")
       if (!fileList || fileList.length === 0) return
 
       setError(null)
@@ -49,6 +52,7 @@ export function FileUploader({
 
         setFileCount((prev) => prev + filtered.length)
       }
+
     },
     [onFiles, maxSizeMb]
   )
@@ -103,20 +107,24 @@ export function FileUploader({
         onDragLeave={onDragLeave}
         onPaste={onPaste}
         className={cn(
-          "flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed p-6 text-center cursor-pointer transition",
+          "flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed p-6 text-center cursor-pointer transition z-30",
           "bg-background/40 hover:bg-muted",
           isDragging && "border-primary bg-primary/5",
         )}
       >
-        <div className="flex items-center gap-2 text-sm font-medium">
-          <Upload className="h-4 w-4" />
-          <span>{title}</span>
+        <div className="flex w-full justify-between items-center z-50">
+          <div className="flex items-center gap-2 text-sm font-medium">
+            <Upload className="h-4 w-4" />
+            <span>{title}</span>
+          </div>
+
+          <HelpButton/>
         </div>
 
-        <p className="text-xs text-muted-foreground">
+        {/* <p className="text-xs text-muted-foreground">
           Glissez-déposez vos fichiers ici, ou{" "}
           <span className="font-medium">cliquez</span> pour parcourir
-        </p>
+        </p> */}
 
         <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1">
@@ -167,7 +175,7 @@ export function FileUploader({
           {error}
         </p>
       )}
-      
+
     </div>
   )
 }
