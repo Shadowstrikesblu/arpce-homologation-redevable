@@ -90,9 +90,9 @@ const DossierDetails = ({params} : Props ) => {
         {/* Header + action */}
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div>
+            <Button size={"icon"} variant={"ghost"} onClick={()=>router.back()}>
               <ArrowLeft/>
-            </div>
+            </Button>
             <div>
               <p className="text-sm text-gray-500 mb-1">Dossier n°</p>
               <h1 className="text-3xl font-bold text-[#af3338]">
