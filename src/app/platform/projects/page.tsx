@@ -23,6 +23,10 @@ import { Card } from "@/components/ui/card";
 import { Loader2, AlertTriangle } from "lucide-react";
 import projetsMock from "@/lib/mock/dossier.mock";
 import { useRouter } from "next/navigation";
+import SystemLoader from "@/lib/components/loader";
+import { ScreenHeader } from "@/lib/components/header";
+import { pathsUtils } from "@/lib/utils/path.util";
+import { Pagination } from "@/lib/components/pagination";
 
 type SortOption = "date_desc" | "date_asc" | "numero_asc";
 
@@ -32,59 +36,16 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
-  if (totalPages <= 1) return null;
-
-  const handlePrev = () => {
-    if (currentPage > 1) onPageChange(currentPage - 1);
-  };
-
-  const handleNext = () => {
-    if (currentPage < totalPages) onPageChange(currentPage + 1);
-  };
-
-  return (
-    <div className="flex justify-center items-center gap-2 mt-4">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={handlePrev}
-        disabled={currentPage === 1}
-      >
-        Précédent
-      </Button>
-
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-        <Button
-          key={page}
-          variant={currentPage === page ? "default" : "outline"}
-          size="sm"
-          onClick={() => onPageChange(page)}
-        >
-          {page}
-        </Button>
-      ))}
-
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={handleNext}
-        disabled={currentPage === totalPages}
-      >
-        Suivant
-      </Button>
-    </div>
-  );
-};
 
 const PageProjets = () => {
+  
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [sortOption, setSortOption] = useState<SortOption>("date_desc");
   const router = useRouter()
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -146,47 +107,20 @@ const PageProjets = () => {
     indexOfLastItem
   );
 
-
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-        <Card className="flex flex-col items-center justify-center px-10 py-8 gap-4">
-          <Loader2 className="h-10 w-10 animate-spin text-[#af3338]" />
-          <p className="text-gray-600 font-medium">Chargement des dossiers...</p>
-        </Card>
-      </div>
-    );
+    return <SystemLoader/>
   }
 
   if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-        <Card className="max-w-md p-8 flex flex-col items-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center">
-            <AlertTriangle className="w-8 h-8 text-red-600" />
-          </div>
-          <p className="text-[#af3338] font-semibold text-lg text-center">{error}</p>
-          <Button
-            onClick={() => window.location.reload()}
-            className="bg-[#af3338] hover:bg-[#8f2a2e]"
-          >
-            Réessayer
-          </Button>
-        </Card>
-      </div>
-    );
+
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 space-y-6">
-        {/* Titre */}
-        <div>
-          <h1 className="text-3xl font-bold text-[#af3338] mb-2">
-            Mes demandes d&apos;homologation
-          </h1>
-          <div className="w-20 h-1 bg-[#8ba755] rounded-full" />
-        </div>
+    <div className="min-h-screen space-y-8">
+
+      <ScreenHeader onActionClick={()=>router.push(pathsUtils.request_form)} title="Mes dossiers d&apos;homologation" actionTitle="Nouvelle demande" desc=""/>
+
+      <div className="max-w-7xl mx-auto px-4 space-y-8">
 
         {/* Barre de filtres : recherche + tri */}
         <Card className="p-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -225,7 +159,7 @@ const PageProjets = () => {
         <Card className="mt-4">
           <div className="overflow-x-auto">
             <Table>
-              <TableHeader className="bg-[#8ba755]">
+              <TableHeader className="bg-secondary">
                 <TableRow>
                   <TableHead className="text-white uppercase text-xs font-semibold">
                     N° Dossier
@@ -260,7 +194,7 @@ const PageProjets = () => {
                   <TableRow
                     key={projet.id}
                     className="cursor-pointer hover:bg-gray-50"
-                    onClick={() => router.push("/projects/" + projet.id)}
+                    onClick={() => router.push(pathsUtils.projects + projet.id)}
                   >
                     <TableCell className="font-semibold text-[#af3338]">
                       {projet.numero}

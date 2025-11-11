@@ -16,6 +16,8 @@ import { Client } from "@/lib/interfaces/models.interface";
 import { LogOut, Trash2, User as UserIcon, Mail, Phone, MapPin, Building2, Save, X, File, Edit2, Settings } from "lucide-react";
 
 export default function ProfilPage() {
+
+  
   const router = useRouter();
   const [user, setUser] = useState<Client | null>(null);
   const [loading, setLoading] = useState(true);
