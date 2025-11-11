@@ -31,6 +31,7 @@ import { useParams, useRouter } from "next/navigation";
 import { use, useMemo } from "react";
 import projetsMock from "@/lib/mock/dossier.mock";
 import { ArrowLeft } from "lucide-react";
+import { ModePaiement } from "@/lib/components/payment/mode-paiement";
 
 
 const formatDate = (value?: string | null) => {
@@ -429,53 +430,16 @@ const DossierDetails = ({params} : Props ) => {
 
           {/* Onglet mode de règlement */}
           <TabsContent value="reglement">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">
-                  Mode de règlement
-                </CardTitle>
-                <CardDescription>
-                  Informations sur le mode de paiement choisi pour ce dossier.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Code</span>
-                  <span className="font-medium">
-                    {dossier.modeReglement?.code ?? "-"}
-                  </span>
-                </div>
-                <Separator />
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Libellé</span>
-                  <span className="font-medium">
-                    {dossier.modeReglement?.libelle ?? "-"}
-                  </span>
-                </div>
-                <Separator />
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Mobile Banking</span>
-                  <span className="font-medium">
-                    {dossier.modeReglement?.mobileBanking === 1
-                      ? "Oui"
-                      : "Non"}
-                  </span>
-                </div>
-                {dossier.modeReglement?.remarques && (
-                  <>
-                    <Separator />
-                    <div>
-                      <span className="text-gray-500 text-sm">
-                        Remarques
-                      </span>
-                      <p className="text-xs text-gray-700 mt-1">
-                        {dossier.modeReglement.remarques}
-                      </p>
-                    </div>
-                  </>
-                )}
-              </CardContent>
-            </Card>
+            <ModePaiement
+              onMobileMoneyValidate={(payload) => {
+                // À raccorder au backend: envoi de l'intention de paiement Mobile Money
+                console.log("Mobile Money validé:", payload)
+              }}
+              onUpload={(mode, files) => {
+                // À raccorder au backend: upload du justificatif selon le mode
+                console.log("Upload justificatif:", mode, files)
+              }}
+            />
           </TabsContent>
 
         </Tabs>
