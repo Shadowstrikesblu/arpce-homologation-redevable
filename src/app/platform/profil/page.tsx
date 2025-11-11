@@ -161,6 +161,7 @@ export default function ProfilPage() {
               <div className="h-32 w-32 rounded-full bg-white/20 backdrop-blur-sm border-4 border-white/30 flex items-center justify-center shadow-xl">
                 <UserIcon className="h-16 w-16 text-white" />
               </div>
+              
               {editing && (
                 <button className="absolute bottom-0 right-0 bg-[#8ba755] hover:bg-[#7a9648] text-white rounded-full p-2 shadow-lg border-2 border-white">
                   <Edit2 className="h-4 w-4" />

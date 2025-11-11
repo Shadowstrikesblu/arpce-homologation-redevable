@@ -250,8 +250,19 @@ export const projetsMock: Dossier[] = [
         quantiteEquipements: 1500,
         contactNom: "Sophie Bernard",
         contactEmail: "s.bernard@bosch.com",
+        attestations : [
+          {
+            id: 12345,
+            idDemande: 67890,
+            dateDelivrance: '2025-01-15',
+            dateExpiration: '2029-01-15',
+            donnees: 'contenu mock',
+            extension: 'pdf',
+          }
+        ]
       },
     ],
+
   },
 
   // --- Dossier 7 ---

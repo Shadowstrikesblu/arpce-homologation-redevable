@@ -31,7 +31,9 @@ import { useParams, useRouter } from "next/navigation";
 import { use, useMemo } from "react";
 import projetsMock from "@/lib/mock/dossier.mock";
 import { ArrowLeft } from "lucide-react";
-import { ModePaiement } from "@/lib/components/payment/mode-paiement";
+import { AttestationCard } from "@/lib/components/attestationCard";
+import { PaymentCard } from "@/lib/components/payment/paymentCard";
+import { pathsUtils } from "@/lib/utils/path.util";
 
 
 const formatDate = (value?: string | null) => {
@@ -92,7 +94,7 @@ const DossierDetails = ({params} : Props ) => {
             </Button>
             <div>
               <p className="text-sm text-gray-500 mb-1">Dossier n°</p>
-              <h1 className="text-3xl font-bold text-[#af3338]">
+              <h1 className="text-3xl font-bold text-primary">
                 {dossier.numero}
               </h1>
               <p className="text-sm text-gray-600 mt-2">
@@ -129,6 +131,9 @@ const DossierDetails = ({params} : Props ) => {
           </CardContent>
         </Card>
 
+        <PaymentCard dossier={dossier} onPaymentClick={()=>router.push(pathsUtils.projects + id + "/payment")}/>
+
+
         {/* Alerte selon le statut */}
         {isValide && (
           <Alert className="border-green-200 bg-green-50">
@@ -164,8 +169,7 @@ const DossierDetails = ({params} : Props ) => {
         <Tabs defaultValue="dossier" className="w-full">
           <TabsList className="mb-4">
             <TabsTrigger value="dossier">Informations dossier</TabsTrigger>
-            <TabsTrigger value="demandes">Demandes &amp; attestations</TabsTrigger>
-            <TabsTrigger value="reglement">Mode de règlement</TabsTrigger>
+            <TabsTrigger value="demandes">Equipements</TabsTrigger>
           </TabsList>
 
           {/* Onglet informations dossier */}
@@ -423,20 +427,6 @@ const DossierDetails = ({params} : Props ) => {
                 })}
               </CardContent>
             </Card>
-          </TabsContent>
-
-          {/* Onglet mode de règlement */}
-          <TabsContent value="reglement">
-            <ModePaiement
-              onMobileMoneyValidate={(payload) => {
-                // À raccorder au backend: envoi de l'intention de paiement Mobile Money
-                console.log("Mobile Money validé:", payload)
-              }}
-              onUpload={(mode, files) => {
-                // À raccorder au backend: upload du justificatif selon le mode
-                console.log("Upload justificatif:", mode, files)
-              }}
-            />
           </TabsContent>
 
         </Tabs>
