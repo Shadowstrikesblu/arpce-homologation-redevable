@@ -1,16 +1,22 @@
 "use client"
 
 import * as React from "react"
+import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label" // Import pour le libellé
-import { Separator } from "@/components/ui/separator" // Import pour le séparateur
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Separator } from "@/components/ui/separator"
 import { Demande, DocumentDemande } from "@/lib/interfaces/models.interface"
 import { createEmptyDemande, fileToDocumentDemande } from "@/lib/utils/form.create.utils"
 import { RequestComponent } from "@/lib/components/request.form"
 import { FileUploader } from "@/lib/components/upload"
 import { ScreenHeader } from "@/lib/components/header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+
+// Type pour le formulaire du dossier
+type DossierFormData = {
+  libelle: string;
+}
 
 export default function MultiDemandesScreen() {
 
@@ -20,7 +26,13 @@ export default function MultiDemandesScreen() {
   
   const [activeIndex, setActiveIndex] = React.useState(0)
   const [documentsLetter, setDocumentsLetter] = React.useState<DocumentDemande[]>([])
-  const [dossierName, setDossierName] = React.useState<string>("")
+
+  // Formulaire pour gérer le libellé du dossier
+  const dossierForm = useForm<DossierFormData>({
+    defaultValues: {
+      libelle: "",
+    },
+  })
 
   const handleSubmitDemande = (index: number, demande: Demande) => {
     setDemandes((prev) =>
@@ -52,24 +64,46 @@ export default function MultiDemandesScreen() {
       <ScreenHeader onActionClick={handleAddDemande} actionTitle="Ajouter un équipement" title="Demande d&apos;homologation" desc=""/>
       <div className="mx-auto max-w-7xl space-y-8">
 
-        
-
         {/* Section dossier */}
         <Card className="border border-dashed border-gray-200">
           <CardHeader>
             <CardTitle>Votre courrier</CardTitle>
-            <div className="mt-6 space-y-2">
-              <Label htmlFor="dossier-name">Libellé</Label>
-              <Input
-                id="dossier-name"
-                placeholder="Nom du dossier"
-                value={dossierName}
-                onChange={(e) => setDossierName(e.target.value)}
-              />
-            </div>
             <CardDescription>
               Téléversez la lettre d&apos;homologation signée relative à ce dossier (PDF, 3&nbsp;Mo max).
             </CardDescription>
+            {/* Champ "Libellé" avec bouton de validation */}
+            <div className="mt-4">
+              <Form {...dossierForm}>
+                <FormField
+                  control={dossierForm.control}
+                  name="libelle"
+                  // La règle "required" a été supprimée
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Libellé</FormLabel>
+                      <div className="flex items-center gap-2">
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="Nom du dossier"
+                            className="max-w-sm" 
+                          />
+                        </FormControl>
+                        <Button 
+                          type="button" 
+                          variant="outline"
+                          size="sm"
+                          onClick={() => dossierForm.trigger('libelle')}
+                        >
+                          Valider
+                        </Button>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </Form>
+            </div>
           </CardHeader>
           <CardContent>
             <FileUploader
@@ -79,8 +113,6 @@ export default function MultiDemandesScreen() {
               maxSizeMb={3}
               onFiles={handleUploadLetter}
             />
-            {/* Champ "Libellé" intégré dans la même carte */}
-            
           </CardContent>
         </Card>
         <Separator className="my-8" />
@@ -103,7 +135,7 @@ export default function MultiDemandesScreen() {
         {/* Formulaire actif */}
         {activeDemande && (
           <RequestComponent
-            key={activeIndex} // force remount quand on change de demande
+            key={activeIndex} 
             initialValue={activeDemande}
             label={`Demande ${activeIndex + 1}`}
             onSubmitDemande={(demande : Demande) =>
@@ -111,11 +143,7 @@ export default function MultiDemandesScreen() {
             }
           />
         )}
-
-        
-
       </div>
     </div>
-
   )
 }
