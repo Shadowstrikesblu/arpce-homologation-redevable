@@ -74,6 +74,8 @@ export function SupportAndHelpSection() {
 
   return (
     <section className="space-y-6 rounded-2xl bg-white/90 p-6 shadow-sm border border-gray-100">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">Support & Paramètres</h3>
+
       <div className="grid gap-4 md:grid-cols-2">
         <button
           onClick={() => router.push('/aide')}
@@ -104,22 +106,23 @@ export function SupportAndHelpSection() {
         </button>
       </div>
 
-      <Card className="border border-dashed border-[#af3338]/30 bg-[#af3338]/5">
-        <CardContent className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
-          <div className="space-y-1">
-            <p className="text-sm font-semibold text-[#af3338]">Besoin d’aide immédiate ?</p>
-            <p className="text-sm text-[#af3338]/80">
-              Notre équipe support est à votre écoute pour vous accompagner.
-            </p>
+      <Card className="mt-8 bg-linear-to-r from-[#af3338] to-[#c9454a] text-white">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-bold text-lg mb-2">Besoin d'aide rapide ?</h3>
+              <p className="text-white/80 text-sm">
+                Notre équipe de support est disponible pour vous accompagner dans vos démarches d'homologation.
+              </p>
+            </div>
+            <Button 
+              variant="secondary" 
+              className="bg-white text-[#af3338] hover:bg-gray-100"
+              onClick={() => router.push('/support')}
+            >
+              Contacter le support
+            </Button>
           </div>
-          <Button
-            variant="outline"
-            className="border-[#af3338] text-[#af3338] hover:bg-[#af3338]/10"
-            onClick={() => router.push('/support')}
-          >
-            <LifeBuoy className="mr-2 h-4 w-4" />
-            Contacter le support
-          </Button>
         </CardContent>
       </Card>
     </section>
