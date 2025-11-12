@@ -79,14 +79,13 @@ export default function DashboardPage() {
 
         <QuickActions />
 
-        <div className="grid gap-10 lg:grid-cols-[2fr_1fr]">
           <RecentDemandsTable
             demands={recentDemands}
             onViewMore={() => router.push(pathsUtils.projects)}
             onViewDetails={handleViewDemandDetails}
           />
+          
           <PendingPaymentsTable payments={pendingPayments} onProcessPayment={handleProcessPayment} />
-        </div>
 
         <SupportAndHelpSection />
       </main>
