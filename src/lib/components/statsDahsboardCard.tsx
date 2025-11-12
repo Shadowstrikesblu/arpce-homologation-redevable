@@ -1,5 +1,5 @@
 // components/dashboard/StatsCards.tsx
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { FileText, CheckCircle, XCircle, Clock, CreditCard } from 'lucide-react'
 import { DashboardStats } from '../types/dashboard.types'
@@ -9,84 +9,99 @@ interface StatsCardsProps {
   onViewAll?: (filter?: string) => void
 }
 
+type CardConfig = {
+  title: string
+  value: number | string
+  icon: typeof FileText
+  accent: {
+    bg: string
+    text: string
+  }
+  subtitle?: string
+  badge?: string
+  onClick?: () => void
+}
+
 export function StatsCards({ stats, onViewAll }: StatsCardsProps) {
-  const cards = [
+  const cards: CardConfig[] = [
     {
       title: 'Total des demandes',
       value: stats.total,
       icon: FileText,
-      color: 'border-l-[#af3338]',
-      valueColor: 'text-[#af3338]',
+      accent: { bg: 'bg-[#af3338]/10', text: 'text-[#af3338]' },
       onClick: () => onViewAll?.('all')
-    },
-    {
-      title: 'Demandes validées',
-      value: stats.success,
-      icon: CheckCircle,
-      color: 'border-l-[#8ba755]',
-      valueColor: 'text-[#8ba755]',
-      subtitle: `${Math.round((stats.success / stats.total) * 100)}% de réussite`,
-      onClick: () => onViewAll?.('success')
     },
     {
       title: 'En cours',
       value: stats.inProgress,
       icon: Clock,
-      color: 'border-l-amber-500',
-      valueColor: 'text-amber-600',
+      accent: { bg: 'bg-amber-100', text: 'text-amber-600' },
       badge: 'En traitement',
       onClick: () => onViewAll?.('inProgress')
     },
     {
+      title: 'Demandes validées',
+      value: `${stats.success}/${stats.total}`,
+      icon: CheckCircle,
+      accent: { bg: 'bg-emerald-100', text: 'text-emerald-600' },
+      subtitle:
+        stats.total > 0
+          ? `${stats.success} réussite${stats.success > 1 ? "s" : ""} sur ${stats.total} demande${stats.total > 1 ? "s" : ""}`
+          : "Aucune demande enregistrée",
+      onClick: () => onViewAll?.('success')
+    },
+    {
       title: 'Demandes rejetées',
-      value: stats.failed,
+      value: `${stats.failed}/${stats.total}`,
       icon: XCircle,
-      color: 'border-l-red-500',
-      valueColor: 'text-red-600',
-      subtitle: `${Math.round((stats.failed / stats.total) * 100)}% d'échec`,
+      accent: { bg: 'bg-rose-100', text: 'text-rose-600' },
+      subtitle:
+        stats.total > 0
+          ? `${stats.failed} rejet${stats.failed > 1 ? "s" : ""} sur ${stats.total} demande${stats.total > 1 ? "s" : ""}`
+          : "Aucune demande enregistrée",
       onClick: () => onViewAll?.('failed')
     },
     {
       title: 'Paiements en attente',
       value: stats.pendingPayments,
       icon: CreditCard,
-      color: 'border-l-blue-500',
-      valueColor: 'text-blue-600',
-      badge: 'En attente',
+      accent: { bg: 'bg-sky-100', text: 'text-sky-600' },
+      badge: 'À traiter',
       onClick: () => onViewAll?.('payments')
     }
   ]
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
       {cards.map((card, index) => (
-        <Card 
+        <Card
           key={index}
-          className={`bg-white border-l-4 hover:shadow-lg transition-shadow duration-200 cursor-pointer ${card.color}`}
+          className="group cursor-pointer border border-gray-100 bg-white/90 backdrop-blur-sm shadow-sm transition hover:shadow-md"
           onClick={card.onClick}
         >
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 flex items-center">
-              <card.icon className="h-4 w-4 mr-2" />
-              {card.title}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-baseline justify-between">
-              <p className={`text-3xl font-bold ${card.valueColor}`}>
+          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-3">
+            <div className="space-y-2">
+              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                {card.title}
+              </p>
+              <p
+                className={`${typeof card.value === "string" ? "text-2xl" : "text-3xl"} font-semibold text-gray-900`}
+              >
                 {card.value}
               </p>
-              {card.badge && (
-                <Badge variant="secondary" className={
-                  card.title.includes('En cours') ? 'bg-amber-100 text-amber-800' :
-                  'bg-blue-100 text-blue-800'
-                }>
-                  {card.badge}
-                </Badge>
-              )}
             </div>
+            <div className={`flex h-10 w-10 items-center justify-center rounded-full ${card.accent.bg}`}>
+              <card.icon className={`h-5 w-5 ${card.accent.text}`} />
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {card.badge && (
+              <Badge variant="secondary" className="bg-gray-100 text-gray-700">
+                {card.badge}
+              </Badge>
+            )}
             {card.subtitle && (
-              <p className="text-sm text-gray-600 mt-2">
+              <p className="text-sm text-gray-500">
                 {card.subtitle}
               </p>
             )}
