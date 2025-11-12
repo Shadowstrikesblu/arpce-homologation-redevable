@@ -12,6 +12,7 @@ import { FileUploader } from "./upload"
 import { Textarea } from "@/components/ui/textarea"
 import { DemandeFormProps } from "../interfaces/requestComponentProps.interface"
 import { fileToDocumentDemande } from "../utils/form.create.utils"
+import { Separator } from "@/components/ui/separator" 
 
 
 
@@ -26,21 +27,15 @@ export function RequestComponent({
   })
 
 
-  const [documentsZone1, setDocumentsZone1] = React.useState<DocumentDemande[]>([])
-  const [documentsZone2, setDocumentsZone2] = React.useState<DocumentDemande[]>([])
+  const [documentsFicheTechnique, setDocumentsFicheTechnique] = React.useState<DocumentDemande[]>([])
 
   // State final pour voir la Demande complète (typée Demande)
   const [demandeSoumise, setDemandeSoumise] = React.useState<Demande | null>(null)
 
 
-  const handleUploadZone1 = (files: File[]) => {
-    const docs = files.map((f) => fileToDocumentDemande(f, "Document zone 1"))
-    setDocumentsZone1((prev) => [...prev, ...docs])
-  }
-
-  const handleUploadZone2 = (files: File[]) => {
-    const docs = files.map((f) => fileToDocumentDemande(f, "Document zone 2"))
-    setDocumentsZone2((prev) => [...prev, ...docs])
+  const handleUploadFicheTechnique = (files: File[]) => {
+    const docs = files.map((f) => fileToDocumentDemande(f, "Fiche technique"))
+    setDocumentsFicheTechnique((prev) => [...prev, ...docs])
   }
 
 
@@ -52,10 +47,7 @@ export function RequestComponent({
 
     
 
-    const tousLesDocs: DocumentDemande[] = [
-      ...documentsZone1,
-      ...documentsZone2,
-    ]
+    const tousLesDocs: DocumentDemande[] = [...documentsFicheTechnique]
 
     const demandeComplete: Demande = {
       ...values,
@@ -73,7 +65,11 @@ export function RequestComponent({
   // RENDER
   // ------------------------------------
   return (
+
+    
+
     <div className="mx-auto space-y-8">
+      
       <h1 className="text-2xl font-semibold tracking-tight">
         {label}
       </h1>
@@ -272,32 +268,27 @@ export function RequestComponent({
               </div>
 
               {/* Bouton submit */}
-              <Button type="submit">Enregistrer la demande</Button>
+              <Button type="submit"> Enregistrer demande</Button>
             </form>
           </Form>
         </div>
 
-        {/* 3 ZONES D’UPLOAD JUSTE APRÈS LE FORMULAIRE */}
+        {/* Zone d’upload Fiche technique */}
         <div className="space-y-2">
-          <h2 className="text-lg font-medium">Pièces jointes</h2>
-
+          <h2 className="text-lg font-medium">Fiche technique</h2>
+          <p className="text-sm text-muted-foreground">
+            Ajoutez la fiche technique détaillée de l&apos;équipement à homologuer (PDF, 3&nbsp;Mo max).
+          </p>
           <FileUploader
-            title="Documents administratifs"
-            accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-            maxSizeMb={10}
+            title="Fiche technique"
+            accept=".pdf"
+            maxSizeMb={3}
             multiple
-            onFiles={handleUploadZone1}
-          />
-
-          <FileUploader
-            title="Autres justificatifs"
-            accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-            maxSizeMb={10}
-            multiple
-            onFiles={handleUploadZone2}
+            onFiles={handleUploadFicheTechnique}
           />
         </div>
       </div>
     </div>
+    
   )
 }

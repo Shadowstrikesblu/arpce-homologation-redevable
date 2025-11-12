@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { getUserById, updateUser, deleteUser, logout, UpdateClientData } from "@/lib/services/user.service";
 import { Client } from "@/lib/interfaces/models.interface";
-import { LogOut, Trash2, User as UserIcon, Mail, Phone, MapPin, Building2, Save, X, File, Edit2, Settings } from "lucide-react";
+import { LogOut, Trash2, User as UserIcon, Mail, Phone, MapPin, Building2, Save, X, Edit2, Settings } from "lucide-react";
 
 export default function ProfilPage() {
 
@@ -57,7 +57,6 @@ export default function ProfilPage() {
           contactNom: userData.contactNom || "",
           contactFonction: userData.contactFonction || "",
           contactTelephone: userData.contactTelephone || "",
-          remarques: userData.remarques || "",
         });
         setError(null);
       } catch (err) {
@@ -405,27 +404,6 @@ export default function ProfilPage() {
               </div>
             </div>
 
-            {/* Carte Remarques */}
-            <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                <File className="h-5 w-5 mr-2 text-gray-600" />
-                Remarques
-              </h2>
-              {editing ? (
-                <textarea
-                  name="remarques"
-                  value={formData.remarques || ""}
-                  onChange={handleInputChange}
-                  rows={4}
-                  className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#af3338] focus:border-[#af3338] transition-all resize-none"
-                  placeholder="Ajoutez des remarques..."
-                />
-              ) : (
-                <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
-                  {user.remarques || "Aucune remarque"}
-                </p>
-              )}
-            </div>
           </div>
 
           {/* Sidebar - Actions */}
@@ -461,7 +439,6 @@ export default function ProfilPage() {
                         contactNom: user.contactNom || "",
                         contactFonction: user.contactFonction || "",
                         contactTelephone: user.contactTelephone || "",
-                        remarques: user.remarques || "",
                       });
                     }}
                     variant="outline"

@@ -1,10 +1,8 @@
-// components/dashboard/RecentDemandsTable.tsx
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, Eye, FileText } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { ArrowRight, Eye } from 'lucide-react'
 import { RecentDemand } from '../types/dashboard.types'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface RecentDemandsTableProps {
   demands: RecentDemand[]
@@ -12,73 +10,81 @@ interface RecentDemandsTableProps {
   onViewDetails: (id: string) => void
 }
 
-export function RecentDemandsTable({ demands, onViewMore, onViewDetails }: RecentDemandsTableProps) {
-  const getStatusBadge = (statut: string) => {
-    const variants = {
-      success: { label: 'Validé', color: 'bg-green-100 text-green-800' },
-      failed: { label: 'Rejeté', color: 'bg-red-100 text-red-800' },
-      inProgress: { label: 'En cours', color: 'bg-amber-100 text-amber-800' },
-      pending: { label: 'En attente', color: 'bg-blue-100 text-blue-800' }
-    }
-    
-    const variant = variants[statut as keyof typeof variants] || variants.pending
-    return <Badge className={variant.color}>{variant.label}</Badge>
-  }
+const statusStyles: Record<string, { label: string; className: string }> = {
+  success: { label: 'Validé', className: 'bg-emerald-100 text-emerald-700' },
+  failed: { label: 'Rejeté', className: 'bg-rose-100 text-rose-700' },
+  inProgress: { label: 'En cours', className: 'bg-amber-100 text-amber-700' },
+  pending: { label: 'En attente', className: 'bg-blue-100 text-blue-700' },
+}
 
+const formatDate = (value: string) =>
+  new Date(value).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
+
+export function RecentDemandsTable({ demands, onViewMore, onViewDetails }: RecentDemandsTableProps) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <div className="flex items-center">
-            <FileText className="h-6 w-6 mr-3 text-[#af3338]" />
-            Demandes récentes
-          </div>
-          <Button variant="ghost" onClick={onViewMore} className="text-[#8ba755] hover:text-[#7a9648]">
-            Voir plus
-            <ArrowRight className="h-4 w-4 ml-2" />
-          </Button>
-        </CardTitle>
+    <Card className="border border-gray-100 bg-white/90 shadow-sm">
+      <CardHeader className="flex flex-row items-center justify-between pb-4">
+        <div>
+          <p className="text-sm font-semibold text-gray-900">Dossiers récents</p>
+          <p className="text-xs text-gray-500">Les dernières demandes enregistrées</p>
+        </div>
+        <Button variant="ghost" size="sm" className="text-[#8ba755] hover:text-[#738c47]" onClick={onViewMore}>
+          Voir tout
+          <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
       </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>N° Demande</TableHead>
-              <TableHead>Équipement</TableHead>
-              <TableHead>Contact</TableHead>
-              <TableHead>Statut</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {demands.map((demand) => (
-              <TableRow key={demand.id}>
-                <TableCell className="font-medium">{demand.numeroDemande}</TableCell>
-                <TableCell>{demand.equipement}</TableCell>
-                <TableCell>{demand.contactNom}</TableCell>
-                <TableCell>{getStatusBadge(demand.statut)}</TableCell>
-                <TableCell>{new Date(demand.dateCreation).toLocaleDateString()}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onViewDetails(demand.id.toString())}
-                  >
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        
-        {demands.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            Aucune demande récente
+      <CardContent className="space-y-4">
+        {demands.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-gray-200 bg-gray-50/60 p-8 text-center text-sm text-gray-500">
+            Aucun dossier récent
+          </div>
+        ) : (
+          <div className="overflow-hidden rounded-xl border border-gray-100">
+            <table className="w-full divide-y divide-gray-100 text-sm">
+              <thead className="bg-gray-50/80 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
+                <tr>
+                  <th className="px-4 py-3">N° dossier</th>
+                  <th className="px-4 py-3">Équipement</th>
+                  <th className="px-4 py-3">Contact</th>
+                  <th className="px-4 py-3">Statut</th>
+                  <th className="px-4 py-3">Date</th>
+                  <th className="px-4 py-3 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 bg-white">
+                {demands.map((demand) => {
+                  const status =
+                    statusStyles[demand.statut as keyof typeof statusStyles] ?? statusStyles['pending']!
+                  return (
+                    <tr key={demand.id} className="transition hover:bg-gray-50/70">
+                      <td className="px-4 py-3 font-medium text-gray-900">{demand.numeroDemande}</td>
+                      <td className="px-4 py-3 text-gray-700">{demand.equipement}</td>
+                      <td className="px-4 py-3 text-gray-600">{demand.contactNom}</td>
+                      <td className="px-4 py-3">
+                        <Badge className={status.className} variant="secondary">
+                          {status.label}
+                        </Badge>
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">{formatDate(demand.dateCreation)}</td>
+                      <td className="px-4 py-3 text-right">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                          onClick={() => onViewDetails(demand.id.toString())}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
           </div>
         )}
       </CardContent>
     </Card>
   )
 }
+// components/dashboard/RecentDemandsTable.tsx

@@ -1,14 +1,14 @@
 // app/dashboard/page.tsx
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { DashboardStats, PendingPayment, RecentDemand } from '@/lib/types/dashboard.types'
 import { DashboardHeader } from '@/lib/components/dashboardHeader'
 import { StatsCards } from '@/lib/components/statsDahsboardCard'
 import { PendingPaymentsTable } from '@/lib/components/pendingPayment'
 import { RecentDemandsTable } from '@/lib/components/recentRequest'
-import { QuickActions } from '@/lib/components/quickAction'
+import { QuickActions, SupportAndHelpSection } from '@/lib/components/quickAction'
 import { pathsUtils } from '@/lib/utils/path.util'
 
 
@@ -47,7 +47,6 @@ const mockPendingPayments: PendingPayment[] = [
 
 export default function DashboardPage() {
   const router = useRouter()
-  const [activeSection, setActiveSection] = useState<'main' | 'notifications' | 'profile'>('main')
   const [stats, setStats] = useState<DashboardStats>(mockStats)
   const [recentDemands, setRecentDemands] = useState<RecentDemand[]>(mockRecentDemands)
   const [pendingPayments, setPendingPayments] = useState<PendingPayment[]>(mockPendingPayments)
@@ -64,33 +63,33 @@ export default function DashboardPage() {
     router.push(`/paiements/${id}`)
   }
 
-
-
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
-      <DashboardHeader/>
+    <div className="min-h-screen bg-slate-50">
+      <DashboardHeader />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Cartes de statistiques */}
-        <section>
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">Aperçu des demandes</h2>
-          <StatsCards stats={stats} onViewAll={handleViewAllDemands} />
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-16 space-y-10">
+        <section className="space-y-4">
+          <div className="flex flex-col gap-2">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+              Aperçu des demandes
+            </h2>
+            <StatsCards stats={stats} onViewAll={handleViewAllDemands} />
+          </div>
         </section>
 
-        {/* Actions rapides */}
         <QuickActions />
 
-        <PendingPaymentsTable
-          payments={pendingPayments}
-          onProcessPayment={handleProcessPayment}
-        />
+        <div className="grid gap-10 lg:grid-cols-[2fr_1fr]">
+          <RecentDemandsTable
+            demands={recentDemands}
+            onViewMore={() => router.push(pathsUtils.projects)}
+            onViewDetails={handleViewDemandDetails}
+          />
+          <PendingPaymentsTable payments={pendingPayments} onProcessPayment={handleProcessPayment} />
+        </div>
 
-        <RecentDemandsTable
-          demands={recentDemands}
-          onViewMore={()=>router.push(pathsUtils.projects)}
-          onViewDetails={handleViewDemandDetails}
-        />
-      </div>
+        <SupportAndHelpSection />
+      </main>
     </div>
   )
 }

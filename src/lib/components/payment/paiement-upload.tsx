@@ -13,9 +13,9 @@ type PaiementUploadProps = {
 
 export function PaiementUpload({
   title,
-  accept = ".pdf,.jpg,.jpeg,.png",
+  accept = ".pdf",
   multiple = false,
-  maxSizeMb = 10,
+  maxSizeMb = 3,
   onFiles,
 }: PaiementUploadProps) {
   const handleFiles = React.useCallback(

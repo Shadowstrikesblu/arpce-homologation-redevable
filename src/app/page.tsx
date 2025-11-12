@@ -202,7 +202,7 @@ export default function HomePage() {
                   <p className="text-3xl font-bold text-[#8ba755]">{statsData.success}</p>
                   <div className="text-right">
                     <p className="text-sm text-gray-600">
-                      {Math.round((statsData.success / statsData.total) * 100)}% de réussite
+                      {Math.round((statsData.success / statsData.total) * 100)}% de te
                     </p>
                   </div>
                 </div>
