@@ -1,4 +1,3 @@
-
 export type TypeCle = number;                 // typeCle : clé numérique
 export type TypeCode = string;                // typeCode : code texte
 export type TypeLibelle = string;             // typeLibelle : texte long
@@ -19,6 +18,96 @@ export type TypeNombre = number;              // nombre générique
 export type TypeMontant = number;             // montant monétaire
 export type TypeVraiFaux = boolean;           // bit / bool
 export type BinaryData = string;              // varbinary(max) encodé en base64, à adapter
+
+// ========================
+//  TYPES POUR LES STATUTS
+// ========================
+
+export interface Statut {
+  id: TypeCle;
+  code: TypeCode;
+  libelle: TypeLibelle;
+  type: 'EN_COURS' | 'TERMINE_SUCCESS' | 'ECHEC';
+  couleur: string;
+}
+
+// ========================
+//  CONSTANTES DES STATUTS
+// ========================
+
+export const STATUTS_HOMOLOGATION = {
+  // ========== EN COURS ==========
+  ATTENTE_INSTRUCTION: {
+    id: 1,
+    code: "ATTENTE_INSTRUCTION",
+    libelle: "En attente d'instruction",
+    type: "EN_COURS" as const,
+    couleur: "orange"
+  },
+  ATTENTE_CATEGORISATION: {
+    id: 2,
+    code: "ATTENTE_CATEGORISATION",
+    libelle: "En attente de catégorisation",
+    type: "EN_COURS" as const,
+    couleur: "purple"
+  },
+  EN_COURS_INSTRUCTION: {
+    id: 3,
+    code: "EN_COURS_INSTRUCTION",
+    libelle: "En cours d'instruction",
+    type: "EN_COURS" as const,
+    couleur: "blue"
+  },
+  ATTENTE_PAIEMENT: {
+    id: 4,
+    code: "ATTENTE_PAIEMENT",
+    libelle: "En attente de paiement",
+    type: "EN_COURS" as const,
+    couleur: "yellow"
+  },
+
+  // ========== TERMINÉ/SUCCÈS ==========
+  VALIDE: {
+    id: 5,
+    code: "VALIDE",
+    libelle: "Validé - Certificat délivré",
+    type: "TERMINE_SUCCESS" as const,
+    couleur: "green"
+  },
+
+  // ========== ÉCHEC ==========
+  REJETE: {
+    id: 6,
+    code: "REJETE",
+    libelle: "Rejeté - Non conforme",
+    type: "ECHEC" as const,
+    couleur: "red"
+  },
+  NON_HOMOLOGABLE: {
+    id: 7,
+    code: "NON_HOMOLOGABLE",
+    libelle: "Équipement non homologable",
+    type: "ECHEC" as const,
+    couleur: "red"
+  }
+} as const;
+
+// Helper functions pour les statuts
+export const getStatutByCode = (code: string): Statut => {
+  return Object.values(STATUTS_HOMOLOGATION).find(statut => statut.code === code) || STATUTS_HOMOLOGATION.ATTENTE_INSTRUCTION;
+};
+
+export const getStatutById = (id: number): Statut => {
+  return Object.values(STATUTS_HOMOLOGATION).find(statut => statut.id === id) || STATUTS_HOMOLOGATION.ATTENTE_INSTRUCTION;
+};
+
+export const getStatutsByType = (type: 'EN_COURS' | 'TERMINE_SUCCESS' | 'ECHEC'): Statut[] => {
+  return Object.values(STATUTS_HOMOLOGATION).filter(statut => statut.type === type);
+};
+
+// Types pour les codes et types de statuts
+export type CodeStatut = keyof typeof STATUTS_HOMOLOGATION;
+export type TypeStatut = 'EN_COURS' | 'TERMINE_SUCCESS' | 'ECHEC';
 
 /**
  * ========================
@@ -63,7 +152,7 @@ export interface AdminConnexion {
 
 /**
  * Table : adminEvenementsTypes
- * Types d’événements du journal
+ * Types d'événements du journal
  */
 export interface AdminEvenementType {
   id: TypeCle;
@@ -126,7 +215,7 @@ export interface AdminOptions {
 
 /**
  * Table : adminProfils
- * Profils (rôles) d’accès
+ * Profils (rôles) d'accès
  */
 export interface AdminProfil {
   id: TypeCle;
@@ -146,7 +235,7 @@ export interface AdminProfil {
 
 /**
  * Table : adminProfilsAcces
- * Droits par profil et par entrée d’adminAccess
+ * Droits par profil et par entrée d'adminAccess
  */
 export interface AdminProfilsAcces {
   idProfil: TypeCle;
@@ -187,7 +276,7 @@ export interface AdminReporting {
 
 /**
  * Table : adminUtilisateurs
- * Utilisateurs de l’application (back-office)
+ * Utilisateurs de l'application (back-office)
  */
 export interface AdminUtilisateur {
   id: TypeCle;
@@ -213,7 +302,7 @@ export interface AdminUtilisateur {
 
 /**
  * Table : adminUtilisateurTypes
- * Types d’utilisateurs (0,1,2,3…)
+ * Types d'utilisateurs (0,1,2,3…)
  */
 export interface AdminUtilisateurType {
   id: TypeCle;
@@ -281,25 +370,13 @@ export interface Client {
 }
 
 /**
- * Table : statuts
- */
-export interface Statut {
-  id: TypeCle;
-  code: TypeCode;
-  libelle: TypeLibelle;
-
-  // Relations
-  dossiers?: Dossier[];
-}
-
-/**
  * Table : modesReglements
  */
 export interface ModeReglement {
   id: TypeCle;
   code: TypeCode;
   libelle: TypeLibelle;
-  /** Indique si c’est un mode Mobile Banking */
+  /** Indique si c'est un mode Mobile Banking */
   mobileBanking: TypeIndex;
   remarques: TypeRemarques | null;
   utilisateurCreation: TypeNomsComplet | null;
@@ -331,6 +408,7 @@ export interface Dossier {
   devis?: Devis[];
   commentaires?: Commentaire[];
   documents?: DocumentDossier[];
+  attestations?: Attestation[]; 
 }
 
 /**

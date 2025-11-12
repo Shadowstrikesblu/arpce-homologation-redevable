@@ -1,21 +1,27 @@
 import { Dossier } from "../interfaces/models.interface";
+import { STATUTS_HOMOLOGATION } from "../interfaces/models.interface";
 
 export const projetsMock: Dossier[] = [
   // Dossier 1
   {
     id: 1,
     idClient: 1,
-    idStatut: 1,
+    idStatut: 1, 
     idModeReglement: 1,
     dateOuverture: "2024-06-01",
     numero: "HOM-2024-050",
     libelle: "Homologation smartphones Oppo Reno 11",
-    statut: { id: 1, code: "ATTENTE_INSTRUCTION", libelle: "En attente d'instruction" },
+    statut: STATUTS_HOMOLOGATION.ATTENTE_INSTRUCTION,
     modeReglement: {
       id: 1,
       code: "MOBILE",
       libelle: "Mobile Money",
       mobileBanking: 1,
+      remarques: null,
+      utilisateurCreation: null,
+      dateCreation: null,
+      utilisateurModification: null,
+      dateModification: null
     },
     demandes: [
       {
@@ -42,17 +48,22 @@ export const projetsMock: Dossier[] = [
   {
     id: 2,
     idClient: 2,
-    idStatut: 7,
+    idStatut: 2, // ATTENTE_CATEGORISATION
     idModeReglement: 2,
     dateOuverture: "2024-05-28",
     numero: "HOM-2024-048",
     libelle: "Homologation switches réseau Dell",
-    statut: { id: 7, code: "ATTENTE_CATEGORISATION", libelle: "En attente de catégorisation" },
+    statut: STATUTS_HOMOLOGATION.ATTENTE_CATEGORISATION,
     modeReglement: {
       id: 2,
       code: "VIREMENT",
       libelle: "Virement bancaire",
       mobileBanking: 0,
+      remarques: null,
+      utilisateurCreation: null,
+      dateCreation: null,
+      utilisateurModification: null,
+      dateModification: null
     },
     demandes: [
       {
@@ -88,17 +99,22 @@ export const projetsMock: Dossier[] = [
   {
     id: 3,
     idClient: 1,
-    idStatut: 2,
+    idStatut: 3, // EN_COURS_INSTRUCTION
     idModeReglement: 1,
     dateOuverture: "2024-01-15",
     numero: "HOM-2024-001",
     libelle: "Homologation smartphones Samsung Galaxy S24",
-    statut: { id: 2, code: "EN_COURS_INSTRUCTION", libelle: "En cours d'instruction" },
+    statut: STATUTS_HOMOLOGATION.EN_COURS_INSTRUCTION,
     modeReglement: {
       id: 1,
       code: "MOBILE",
       libelle: "Mobile Money",
       mobileBanking: 1,
+      remarques: null,
+      utilisateurCreation: null,
+      dateCreation: null,
+      utilisateurModification: null,
+      dateModification: null
     },
     demandes: [
       {
@@ -129,21 +145,27 @@ export const projetsMock: Dossier[] = [
       }
     ]
   },
-  //Dossier 4
+
+  // Dossier 4
   {
     id: 4,
     idClient: 3,
-    idStatut: 2,
+    idStatut: 3, // EN_COURS_INSTRUCTION
     idModeReglement: 3,
     dateOuverture: "2024-04-20",
     numero: "HOM-2024-035",
     libelle: "Homologation caméras de surveillance Hikvision",
-    statut: { id: 2, code: "EN_COURS_INSTRUCTION", libelle: "En cours d'instruction" },
+    statut: STATUTS_HOMOLOGATION.EN_COURS_INSTRUCTION,
     modeReglement: {
       id: 3,
       code: "CHEQUE",
       libelle: "Chèque bancaire",
       mobileBanking: 0,
+      remarques: null,
+      utilisateurCreation: null,
+      dateCreation: null,
+      utilisateurModification: null,
+      dateModification: null
     },
     demandes: [
       {
@@ -179,17 +201,22 @@ export const projetsMock: Dossier[] = [
   {
     id: 5,
     idClient: 2,
-    idStatut: 3,
+    idStatut: 4, // ATTENTE_PAIEMENT
     idModeReglement: 2,
     dateOuverture: "2024-03-18",
     numero: "HOM-2024-011",
     libelle: "Homologation smartphones Xiaomi Redmi Note 13",
-    statut: { id: 3, code: "ATTENTE_PAIEMENT", libelle: "En attente de paiement" },
+    statut: STATUTS_HOMOLOGATION.ATTENTE_PAIEMENT,
     modeReglement: {
       id: 2,
       code: "VIREMENT",
       libelle: "Virement bancaire",
       mobileBanking: 0,
+      remarques: null,
+      utilisateurCreation: null,
+      dateCreation: null,
+      utilisateurModification: null,
+      dateModification: null
     },
     demandes: [
       {
@@ -223,21 +250,27 @@ export const projetsMock: Dossier[] = [
       }
     ]
   },
-  //Dossier 6
+
+  // Dossier 6
   {
     id: 6,
     idClient: 4,
-    idStatut: 3,
+    idStatut: 4, 
     idModeReglement: 1,
     dateOuverture: "2024-05-05",
     numero: "HOM-2024-042",
     libelle: "Homologation tablettes Lenovo Tab Extreme",
-    statut: { id: 3, code: "ATTENTE_PAIEMENT", libelle: "En attente de paiement" },
+    statut: STATUTS_HOMOLOGATION.ATTENTE_PAIEMENT,
     modeReglement: {
       id: 1,
       code: "MOBILE",
       libelle: "Mobile Money",
       mobileBanking: 1,
+      remarques: null,
+      utilisateurCreation: null,
+      dateCreation: null,
+      utilisateurModification: null,
+      dateModification: null
     },
     demandes: [
       {
@@ -276,17 +309,22 @@ export const projetsMock: Dossier[] = [
   {
     id: 7,
     idClient: 3,
-    idStatut: 6,
+    idStatut: 7, 
     idModeReglement: 2,
     dateOuverture: "2024-04-15",
     numero: "HOM-2024-018",
     libelle: "Homologation équipements Wi-Fi outdoor",
-    statut: { id: 6, code: "NON_HOMOLOGABLE", libelle: "Équipement non homologable" },
+    statut: STATUTS_HOMOLOGATION.NON_HOMOLOGABLE,
     modeReglement: {
       id: 2,
       code: "VIREMENT",
       libelle: "Virement bancaire",
       mobileBanking: 0,
+      remarques: null,
+      utilisateurCreation: null,
+      dateCreation: null,
+      utilisateurModification: null,
+      dateModification: null
     },
     demandes: [
       {
@@ -317,21 +355,27 @@ export const projetsMock: Dossier[] = [
       }
     ]
   },
-   //Dossier 8
+
+  // Dossier 8
   {
     id: 8,
     idClient: 5,
-    idStatut: 6,
+    idStatut: 7, 
     idModeReglement: 1,
     dateOuverture: "2024-03-10",
     numero: "HOM-2024-022",
     libelle: "Homologation drones de livraison autonomes",
-    statut: { id: 6, code: "NON_HOMOLOGABLE", libelle: "Équipement non homologable" },
+    statut: STATUTS_HOMOLOGATION.NON_HOMOLOGABLE,
     modeReglement: {
       id: 1,
       code: "MOBILE",
       libelle: "Mobile Money",
       mobileBanking: 1,
+      remarques: null,
+      utilisateurCreation: null,
+      dateCreation: null,
+      utilisateurModification: null,
+      dateModification: null
     },
     demandes: [
       {
@@ -367,17 +411,22 @@ export const projetsMock: Dossier[] = [
   {
     id: 9,
     idClient: 1,
-    idStatut: 5,
+    idStatut: 6, 
     idModeReglement: 1,
     dateOuverture: "2024-02-10",
     numero: "HOM-2024-002",
     libelle: "Homologation tablettes iPad Pro",
-    statut: { id: 5, code: "REJETE", libelle: "Rejeté - Non conforme" },
+    statut: STATUTS_HOMOLOGATION.REJETE,
     modeReglement: {
       id: 1,
       code: "MOBILE",
       libelle: "Mobile Money",
       mobileBanking: 1,
+      remarques: null,
+      utilisateurCreation: null,
+      dateCreation: null,
+      utilisateurModification: null,
+      dateModification: null
     },
     demandes: [
       {
@@ -408,21 +457,27 @@ export const projetsMock: Dossier[] = [
       }
     ]
   },
-//Dossier 10
+
+  // Dossier 10
   {
     id: 10,
     idClient: 6,
-    idStatut: 5,
+    idStatut: 6,
     idModeReglement: 2,
     dateOuverture: "2024-01-08",
     numero: "HOM-2024-005",
     libelle: "Homologation antennes 5G non conformes",
-    statut: { id: 5, code: "REJETE", libelle: "Rejeté - Non conforme" },
+    statut: STATUTS_HOMOLOGATION.REJETE,
     modeReglement: {
       id: 2,
       code: "VIREMENT",
       libelle: "Virement bancaire",
       mobileBanking: 0,
+      remarques: null,
+      utilisateurCreation: null,
+      dateCreation: null,
+      utilisateurModification: null,
+      dateModification: null
     },
     demandes: [
       {
@@ -458,17 +513,22 @@ export const projetsMock: Dossier[] = [
   {
     id: 11,
     idClient: 1,
-    idStatut: 4,
+    idStatut: 5,
     idModeReglement: 2,
     dateOuverture: "2023-11-20",
     numero: "HOM-2023-045",
     libelle: "Homologation routeurs Cisco série 8000",
-    statut: { id: 4, code: "VALIDE", libelle: "Validé - Certificat délivré" },
+    statut: STATUTS_HOMOLOGATION.VALIDE,
     modeReglement: {
       id: 2,
       code: "VIREMENT",
       libelle: "Virement bancaire",
       mobileBanking: 0,
+      remarques: null,
+      utilisateurCreation: null,
+      dateCreation: null,
+      utilisateurModification: null,
+      dateModification: null
     },
     demandes: [
       {
@@ -512,24 +572,27 @@ export const projetsMock: Dossier[] = [
       }
     ]
   },
-  //Dossier 12
+
+  // Dossier 12
   {
     id: 12,
     idClient: 3,
-    idStatut: 4,
+    idStatut: 5,
     idModeReglement: 1,
     dateOuverture: "2023-09-10",
     numero: "HOM-2023-030",
     libelle: "Homologation équipements IoT industriels Bosch",
-    statut: { id: 4, 
-      code: "VALIDE", 
-      libelle: "Validé - Certificat délivré" 
-    },
+    statut: STATUTS_HOMOLOGATION.VALIDE,
     modeReglement: {
       id: 1,
       code: "MOBILE",
       libelle: "Mobile Money",
       mobileBanking: 1,
+      remarques: null,
+      utilisateurCreation: null,
+      dateCreation: null,
+      utilisateurModification: null,
+      dateModification: null
     },
     demandes: [
       {
@@ -573,24 +636,27 @@ export const projetsMock: Dossier[] = [
       }
     ]
   },
+
   // Dossier 13
   {
     id: 13,
     idClient: 7,
-    idStatut: 4,
+    idStatut: 5,
     idModeReglement: 3,
     dateOuverture: "2024-02-28",
     numero: "HOM-2024-028",
     libelle: "Homologation téléphones fixes IP Yealink",
-    statut: { id: 4, 
-      code: "VALIDE", 
-      libelle: "Validé - Certificat délivré" 
-    },
+    statut: STATUTS_HOMOLOGATION.VALIDE,
     modeReglement: {
       id: 3,
       code: "CHEQUE",
       libelle: "Chèque bancaire",
       mobileBanking: 0,
+      remarques: null,
+      utilisateurCreation: null,
+      dateCreation: null,
+      utilisateurModification: null,
+      dateModification: null
     },
     demandes: [
       {
