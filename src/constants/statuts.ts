@@ -22,40 +22,54 @@ export const STATUTS = {
     type: "EN_COURS",
     couleur: "blue"
   },
-  ATTENTE_PAIEMENT: {
+  EN_ATTENTE_APPROBATION: {
     id: 3,
-    code: "ATTENTE_PAIEMENT",
+    code: "EN_ATTENTE_APPROBATION",
+    libelle: "En attente d'approbation",
+    type: "EN_COURS",
+    couleur: "yellow"
+  },
+  EN_ATTENTE_PAIEMENT: {
+    id: 4,
+    code: "EN_ATTENTE_PAIEMENT",
     libelle: "En attente de paiement",
     type: "EN_COURS",
     couleur: "yellow"
   },
-  VALIDE: {
-    id: 4,
-    code: "VALIDE",
-    libelle: "Validé - Certificat délivré",
+  REALISEE: {
+    id: 5,
+    code: "REALISEE",
+    libelle: "Réalisée",
     type: "TERMINE_SUCCESS",
     couleur: "green"
   },
-  REJETE: {
-    id: 5,
-    code: "REJETE",
-    libelle: "Rejeté - Non conforme",
-    type: "ECHEC",
-    couleur: "red"
-  },
-  NON_HOMOLOGABLE: {
+  EQUIPEMENT_POINTS_HOMOLOGATION: {
     id: 6,
-    code: "NON_HOMOLOGABLE",
-    libelle: "Équipement non homologable",
+    code: "EQUIPEMENT_POINTS_HOMOLOGATION",
+    libelle: "Équipement aux points d'homologation",
+    type: "EN_COURS",
+    couleur: "blue"
+  },
+  PAIEMENT_EFFECTUE: {
+    id: 7,
+    code: "PAIEMENT_EFFECTUE",
+    libelle: "Paiement effectué",
+    type: "EN_COURS",
+    couleur: "green"
+  },
+  ATTESTATION_DISPONIBLE: {
+    id: 8,
+    code: "ATTESTATION_DISPONIBLE",
+    libelle: "Attestation d'homologation disponible",
+    type: "TERMINE_SUCCESS",
+    couleur: "green"
+  },
+  ANNULEE: {
+    id: 9,
+    code: "ANNULEE",
+    libelle: "Annulée",
     type: "ECHEC",
     couleur: "red"
-  },
-  ATTENTE_CATEGORISATION: {
-    id: 7,
-    code: "ATTENTE_CATEGORISATION",
-    libelle: "En attente de catégorisation",
-    type: "EN_COURS",
-    couleur: "purple"
   }
 } as const;
 

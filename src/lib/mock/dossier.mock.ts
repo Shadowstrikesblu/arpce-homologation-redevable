@@ -48,12 +48,12 @@ export const projetsMock: Dossier[] = [
   {
     id: 2,
     idClient: 2,
-    idStatut: 2, // ATTENTE_CATEGORISATION
+    idStatut: 2, 
     idModeReglement: 2,
     dateOuverture: "2024-05-28",
     numero: "HOM-2024-048",
     libelle: "Homologation switches réseau Dell",
-    statut: STATUTS_HOMOLOGATION.ATTENTE_CATEGORISATION,
+    statut: STATUTS_HOMOLOGATION.EN_COURS_INSTRUCTION,
     modeReglement: {
       id: 2,
       code: "VIREMENT",
@@ -99,12 +99,12 @@ export const projetsMock: Dossier[] = [
   {
     id: 3,
     idClient: 1,
-    idStatut: 3, // EN_COURS_INSTRUCTION
+    idStatut: 3,
     idModeReglement: 1,
     dateOuverture: "2024-01-15",
     numero: "HOM-2024-001",
     libelle: "Homologation smartphones Samsung Galaxy S24",
-    statut: STATUTS_HOMOLOGATION.EN_COURS_INSTRUCTION,
+    statut: STATUTS_HOMOLOGATION.EN_ATTENTE_APPROBATION,
     modeReglement: {
       id: 1,
       code: "MOBILE",
@@ -150,12 +150,12 @@ export const projetsMock: Dossier[] = [
   {
     id: 4,
     idClient: 3,
-    idStatut: 3, // EN_COURS_INSTRUCTION
+    idStatut: 4,
     idModeReglement: 3,
     dateOuverture: "2024-04-20",
     numero: "HOM-2024-035",
     libelle: "Homologation caméras de surveillance Hikvision",
-    statut: STATUTS_HOMOLOGATION.EN_COURS_INSTRUCTION,
+    statut: STATUTS_HOMOLOGATION.EN_ATTENTE_PAIEMENT,
     modeReglement: {
       id: 3,
       code: "CHEQUE",
@@ -201,12 +201,12 @@ export const projetsMock: Dossier[] = [
   {
     id: 5,
     idClient: 2,
-    idStatut: 4, // ATTENTE_PAIEMENT
+    idStatut: 4,
     idModeReglement: 2,
     dateOuverture: "2024-03-18",
     numero: "HOM-2024-011",
     libelle: "Homologation smartphones Xiaomi Redmi Note 13",
-    statut: STATUTS_HOMOLOGATION.ATTENTE_PAIEMENT,
+    statut: STATUTS_HOMOLOGATION.EN_ATTENTE_PAIEMENT,
     modeReglement: {
       id: 2,
       code: "VIREMENT",
@@ -255,12 +255,12 @@ export const projetsMock: Dossier[] = [
   {
     id: 6,
     idClient: 4,
-    idStatut: 4, 
+    idStatut: 5,
     idModeReglement: 1,
     dateOuverture: "2024-05-05",
     numero: "HOM-2024-042",
     libelle: "Homologation tablettes Lenovo Tab Extreme",
-    statut: STATUTS_HOMOLOGATION.ATTENTE_PAIEMENT,
+    statut: STATUTS_HOMOLOGATION.EQUIPEMENT_POINTS_HOMOLOGATION,
     modeReglement: {
       id: 1,
       code: "MOBILE",
@@ -309,12 +309,12 @@ export const projetsMock: Dossier[] = [
   {
     id: 7,
     idClient: 3,
-    idStatut: 7, 
+    idStatut: 6, 
     idModeReglement: 2,
     dateOuverture: "2024-04-15",
     numero: "HOM-2024-018",
     libelle: "Homologation équipements Wi-Fi outdoor",
-    statut: STATUTS_HOMOLOGATION.NON_HOMOLOGABLE,
+    statut: STATUTS_HOMOLOGATION.PAIEMENT_EFFECTUE,
     modeReglement: {
       id: 2,
       code: "VIREMENT",
@@ -339,18 +339,30 @@ export const projetsMock: Dossier[] = [
         marque: "SkyWave",
         fabricant: "SkyWave Tech",
         type: "Point d'accès extérieur",
-        description: "Équipement ne répondant pas aux critères techniques d'homologation.",
+        description: "Équipement en cours de traitement après paiement effectué.",
         quantiteEquipements: 700,
         contactNom: "Hassan Benali",
         contactEmail: "h.benali@skywave.com",
       },
+    ],
+    devis: [
+      {
+        id: 3,
+        idDossier: 7,
+        date: "2024-04-18",
+        montantEtude: 110000,
+        montantHomologation: 385000,
+        montantControle: 77000,
+        paiementOk: 1,
+        paiementMobileID: "MM987654321"
+      }
     ],
     commentaires: [
       {
         id: 4,
         idDossier: 7,
         dateCommentaire: "2024-04-25",
-        commentaire: "Équipement ne répond pas aux spécifications techniques requises - en attente de signature DG pour lettre de non-homologation",
+        commentaire: "Paiement reçu, en attente de signature DG pour délivrance attestation",
         nomInstructeur: "DRSCE Technique"
       }
     ]
@@ -360,12 +372,12 @@ export const projetsMock: Dossier[] = [
   {
     id: 8,
     idClient: 5,
-    idStatut: 7, 
+    idStatut: 9, 
     idModeReglement: 1,
     dateOuverture: "2024-03-10",
     numero: "HOM-2024-022",
     libelle: "Homologation drones de livraison autonomes",
-    statut: STATUTS_HOMOLOGATION.NON_HOMOLOGABLE,
+    statut: STATUTS_HOMOLOGATION.ANNULEE,
     modeReglement: {
       id: 1,
       code: "MOBILE",
@@ -401,7 +413,7 @@ export const projetsMock: Dossier[] = [
         id: 5,
         idDossier: 8,
         dateCommentaire: "2024-03-20",
-        commentaire: "Équipement non conforme à la réglementation aérienne - transmission à la DG pour signature de la lettre de non-homologation",
+        commentaire: "Équipement non conforme à la réglementation aérienne - annulation du dossier",
         nomInstructeur: "DRSCE Réglementation"
       }
     ]
@@ -411,12 +423,12 @@ export const projetsMock: Dossier[] = [
   {
     id: 9,
     idClient: 1,
-    idStatut: 6, 
+    idStatut: 9, 
     idModeReglement: 1,
     dateOuverture: "2024-02-10",
     numero: "HOM-2024-002",
     libelle: "Homologation tablettes iPad Pro",
-    statut: STATUTS_HOMOLOGATION.REJETE,
+    statut: STATUTS_HOMOLOGATION.ANNULEE,
     modeReglement: {
       id: 1,
       code: "MOBILE",
@@ -452,7 +464,7 @@ export const projetsMock: Dossier[] = [
         id: 6,
         idDossier: 9,
         dateCommentaire: "2024-02-20",
-        commentaire: "Équipement non conforme aux normes de sécurité électromagnétique - dossier rejeté",
+        commentaire: "Équipement non conforme aux normes de sécurité électromagnétique - dossier annulé",
         nomInstructeur: "DRSCE Contrôle"
       }
     ]
@@ -462,12 +474,12 @@ export const projetsMock: Dossier[] = [
   {
     id: 10,
     idClient: 6,
-    idStatut: 6,
+    idStatut: 9,
     idModeReglement: 2,
     dateOuverture: "2024-01-08",
     numero: "HOM-2024-005",
     libelle: "Homologation antennes 5G non conformes",
-    statut: STATUTS_HOMOLOGATION.REJETE,
+    statut: STATUTS_HOMOLOGATION.ANNULEE,
     modeReglement: {
       id: 2,
       code: "VIREMENT",
@@ -503,7 +515,7 @@ export const projetsMock: Dossier[] = [
         id: 7,
         idDossier: 10,
         dateCommentaire: "2024-01-15",
-        commentaire: "Dépassement des limites de puissance d'émission - rejet définitif",
+        commentaire: "Dépassement des limites de puissance d'émission - annulation du dossier",
         nomInstructeur: "DRSCE Conformité"
       }
     ]
@@ -513,12 +525,12 @@ export const projetsMock: Dossier[] = [
   {
     id: 11,
     idClient: 1,
-    idStatut: 5,
+    idStatut: 7, 
     idModeReglement: 2,
     dateOuverture: "2023-11-20",
     numero: "HOM-2023-045",
     libelle: "Homologation routeurs Cisco série 8000",
-    statut: STATUTS_HOMOLOGATION.VALIDE,
+    statut: STATUTS_HOMOLOGATION.REALISEE,
     modeReglement: {
       id: 2,
       code: "VIREMENT",
@@ -551,7 +563,7 @@ export const projetsMock: Dossier[] = [
     ],
     devis: [
       {
-        id: 3,
+        id: 4,
         idDossier: 11,
         date: "2023-11-25",
         montantEtude: 150000,
@@ -577,12 +589,12 @@ export const projetsMock: Dossier[] = [
   {
     id: 12,
     idClient: 3,
-    idStatut: 5,
+    idStatut: 8, 
     idModeReglement: 1,
     dateOuverture: "2023-09-10",
     numero: "HOM-2023-030",
     libelle: "Homologation équipements IoT industriels Bosch",
-    statut: STATUTS_HOMOLOGATION.VALIDE,
+    statut: STATUTS_HOMOLOGATION.ATTESTATION_DISPONIBLE,
     modeReglement: {
       id: 1,
       code: "MOBILE",
@@ -615,7 +627,7 @@ export const projetsMock: Dossier[] = [
     ],
     devis: [
       {
-        id: 4,
+        id: 5,
         idDossier: 12,
         date: "2023-09-15",
         montantEtude: 180000,
@@ -641,12 +653,12 @@ export const projetsMock: Dossier[] = [
   {
     id: 13,
     idClient: 7,
-    idStatut: 5,
+    idStatut: 8, 
     idModeReglement: 3,
     dateOuverture: "2024-02-28",
     numero: "HOM-2024-028",
     libelle: "Homologation téléphones fixes IP Yealink",
-    statut: STATUTS_HOMOLOGATION.VALIDE,
+    statut: STATUTS_HOMOLOGATION.ATTESTATION_DISPONIBLE,
     modeReglement: {
       id: 3,
       code: "CHEQUE",
@@ -679,7 +691,7 @@ export const projetsMock: Dossier[] = [
     ],
     devis: [
       {
-        id: 5,
+        id: 6,
         idDossier: 13,
         date: "2024-03-05",
         montantEtude: 105000,

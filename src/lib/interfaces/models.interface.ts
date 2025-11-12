@@ -36,7 +36,6 @@ export interface Statut {
 // ========================
 
 export const STATUTS_HOMOLOGATION = {
-  // ========== EN COURS ==========
   ATTENTE_INSTRUCTION: {
     id: 1,
     code: "ATTENTE_INSTRUCTION",
@@ -44,49 +43,61 @@ export const STATUTS_HOMOLOGATION = {
     type: "EN_COURS" as const,
     couleur: "orange"
   },
-  ATTENTE_CATEGORISATION: {
-    id: 2,
-    code: "ATTENTE_CATEGORISATION",
-    libelle: "En attente de catégorisation",
-    type: "EN_COURS" as const,
-    couleur: "purple"
-  },
   EN_COURS_INSTRUCTION: {
-    id: 3,
+    id: 2,
     code: "EN_COURS_INSTRUCTION",
     libelle: "En cours d'instruction",
     type: "EN_COURS" as const,
     couleur: "blue"
   },
-  ATTENTE_PAIEMENT: {
+  EN_ATTENTE_APPROBATION: {
+    id: 3,
+    code: "EN_ATTENTE_APPROBATION",
+    libelle: "En attente d'approbation",
+    type: "EN_COURS" as const,
+    couleur: "yellow"
+  },
+  EN_ATTENTE_PAIEMENT: {
     id: 4,
-    code: "ATTENTE_PAIEMENT",
+    code: "EN_ATTENTE_PAIEMENT",
     libelle: "En attente de paiement",
     type: "EN_COURS" as const,
     couleur: "yellow"
   },
-
-  // ========== TERMINÉ/SUCCÈS ==========
-  VALIDE: {
+  EQUIPEMENT_POINTS_HOMOLOGATION: {
     id: 5,
-    code: "VALIDE",
-    libelle: "Validé - Certificat délivré",
+    code: "EQUIPEMENT_POINTS_HOMOLOGATION",
+    libelle: "Équipement aux points d'homologation",
+    type: "EN_COURS" as const,
+    couleur: "blue"
+  },
+  PAIEMENT_EFFECTUE: {
+    id: 6,
+    code: "PAIEMENT_EFFECTUE",
+    libelle: "Paiement effectué",
+    type: "EN_COURS" as const,
+    couleur: "green"
+  },
+
+  REALISEE: {
+    id: 7,
+    code: "REALISEE",
+    libelle: "Réalisée",
+    type: "TERMINE_SUCCESS" as const,
+    couleur: "green"
+  },
+  ATTESTATION_DISPONIBLE: {
+    id: 8,
+    code: "ATTESTATION_DISPONIBLE",
+    libelle: "Attestation d'homologation disponible",
     type: "TERMINE_SUCCESS" as const,
     couleur: "green"
   },
 
-  // ========== ÉCHEC ==========
-  REJETE: {
-    id: 6,
-    code: "REJETE",
-    libelle: "Rejeté - Non conforme",
-    type: "ECHEC" as const,
-    couleur: "red"
-  },
-  NON_HOMOLOGABLE: {
-    id: 7,
-    code: "NON_HOMOLOGABLE",
-    libelle: "Équipement non homologable",
+  ANNULEE: {
+    id: 9,
+    code: "ANNULEE",
+    libelle: "Annulée",
     type: "ECHEC" as const,
     couleur: "red"
   }
