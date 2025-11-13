@@ -152,7 +152,7 @@ export default function ProfilPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50 to-gray-100">
       {/* Header avec couleur primaire */}
-      <div className="bg-gradient-to-r from-[#af3338] to-[#c9454a] text-white shadow-lg">
+      <div className="bg-gradient-to-r from-[#af3338] to-[#c9454a] text-white shadow-lg rounded-b-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row items-center md:items-end gap-6">
             {/* Avatar */}
@@ -186,14 +186,6 @@ export default function ProfilPage() {
                 >
                   <Edit2 className="h-4 w-4 mr-2" />
                   Modifier
-                </Button>
-                <Button
-                  onClick={handleLogout}
-                  variant="outline"
-                  className="bg-white/10 hover:bg-white/20 text-white border-white/30"
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Déconnexion
                 </Button>
               </div>
             )}
@@ -451,14 +443,6 @@ export default function ProfilPage() {
               ) : (
                 <div className="space-y-3">
                  
-                  <Button
-                    onClick={handleLogout}
-                    variant="outline"
-                    className="w-full border-2 border-gray-300 hover:bg-gray-50 font-semibold py-6 text-base"
-                  >
-                    <LogOut className="h-5 w-5 mr-2" />
-                    Se déconnecter
-                  </Button>
                   <Button
                     onClick={() => setShowDeleteDialog(true)}
                     variant="destructive"

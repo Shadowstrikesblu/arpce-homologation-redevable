@@ -12,6 +12,8 @@ import { RequestComponent } from "@/lib/components/request.form"
 import { FileUploader } from "@/lib/components/upload"
 import { ScreenHeader } from "@/lib/components/header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { TypeLibelle } from "@/types/types"
+import { Plus } from "lucide-react"
 
 // Type pour le formulaire du dossier
 type DossierFormData = {
@@ -28,11 +30,7 @@ export default function MultiDemandesScreen() {
   const [documentsLetter, setDocumentsLetter] = React.useState<DocumentDemande[]>([])
 
   // Formulaire pour gérer le libellé du dossier
-  const dossierForm = useForm<DossierFormData>({
-    defaultValues: {
-      libelle: "",
-    },
-  })
+  const [libelle, setLibelle] = React.useState<TypeLibelle>()
 
   const handleSubmitDemande = (index: number, demande: Demande) => {
     setDemandes((prev) =>
@@ -60,49 +58,22 @@ export default function MultiDemandesScreen() {
   const activeDemande = demandes[activeIndex]
 
   return (
-    <div className="min-h-screen space-y-4">
-      <ScreenHeader onActionClick={handleAddDemande} actionTitle="Ajouter un équipement" title="Demande d&apos;homologation" desc=""/>
-      <div className="mx-auto max-w-7xl space-y-8">
+    <div className="space-y-8">
+      <div className=" space-y-8">
 
         {/* Section dossier */}
-        <Card className="border border-dashed border-gray-200">
+        <Card>
           <CardHeader>
-            <CardTitle>Votre courrier</CardTitle>
-            <CardDescription>
-              Téléversez la lettre d&apos;homologation signée relative à ce dossier (PDF, 3&nbsp;Mo max).
-            </CardDescription>
+            <CardTitle className="text-2xl font-semibold tracking-tight">Dossier</CardTitle>
+            {/* <CardDescription>
+              .
+            </CardDescription> */}
             {/* Champ "Libellé" avec bouton de validation */}
             <div className="mt-4">
-              <Form {...dossierForm}>
-                <FormField
-                  control={dossierForm.control}
-                  name="libelle"
-                  // La règle "required" a été supprimée
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Libellé</FormLabel>
-                      <div className="flex items-center gap-2">
-                        <FormControl>
-                          <Input
-                            {...field}
-                            placeholder="Nom du dossier"
-                            className="max-w-sm" 
-                          />
-                        </FormControl>
-                        <Button 
-                          type="button" 
-                          variant="outline"
-                          size="sm"
-                          onClick={() => dossierForm.trigger('libelle')}
-                        >
-                          Valider
-                        </Button>
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </Form>
+              <Input
+                placeholder="Nom du dossier"
+                onChange={(event)=>setLibelle(event.target.value)}
+              />
             </div>
           </CardHeader>
           <CardContent>
@@ -116,7 +87,7 @@ export default function MultiDemandesScreen() {
           </CardContent>
         </Card>
         <Separator className="my-8" />
-        <div className="flex flex-wrap gap-2 justify-center items-center">
+        <div className="flex flex-wrap gap-2 justify-between items-center">
           {demandes.map((_, index) => {
             const isActive = index === activeIndex
             return (
@@ -131,19 +102,32 @@ export default function MultiDemandesScreen() {
               </Button>
             )
           })}
+            <Button
+              onClick={handleAddDemande}
+              variant={"default"}
+              className="bg-primary text-white border border-white/30 backdrop-blur-sm px-6 py-3 font-semibold"
+            >
+              <Plus className="h-5 w-5 mr-2" />
+              {"Ajouter un équipement"}
+            </Button>
         </div>
         {/* Formulaire actif */}
         {activeDemande && (
-          <RequestComponent
-            key={activeIndex} 
-            initialValue={activeDemande}
-            label={`Demande ${activeIndex + 1}`}
-            onSubmitDemande={(demande : Demande) =>
-              handleSubmitDemande(activeIndex, demande)
-            }
-          />
+          <div>
+            <RequestComponent
+              key={activeIndex} 
+              initialValue={activeDemande}
+              label={`Equipement ${activeIndex + 1}`}
+              onSubmitDemande={(demande : Demande) =>
+                handleSubmitDemande(activeIndex, demande)
+              }
+            />
+          </div>
         )}
       </div>
+      
+      <Button className="w-full bg-secondary"> Enregistrer le Dossier</Button>
+      
     </div>
   )
 }

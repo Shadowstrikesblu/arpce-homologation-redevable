@@ -112,7 +112,7 @@ export function FileUploader({
           isDragging && "border-primary bg-primary/5",
         )}
       >
-        <div className="flex w-full justify-between items-center z-50">
+        <div className="flex w-full justify-between items-center z-30">
           <div className="flex items-center gap-2 text-sm font-medium">
             <Upload className="h-4 w-4" />
             <span>{title}</span>

@@ -28,7 +28,6 @@ const mockRecentDemands: RecentDemand[] = [
     equipement: 'Serveur HP ProLiant',
     statut: 'success',
     dateCreation: '2024-01-15',
-    contactNom: 'Jean Dupont'
   },
   // ... autres données
 ]
@@ -40,9 +39,7 @@ const mockPendingPayments: PendingPayment[] = [
     montant: 2500,
     dateEcheance: '2024-02-01',
     modeReglement: 'Virement',
-    client: 'Entreprise ABC'
   },
-  // ... autres données
 ]
 
 export default function DashboardPage() {
@@ -64,10 +61,9 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <DashboardHeader />
+    <div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-16 space-y-10">
+      <main className="space-y-10">
         <section className="space-y-4">
           <div className="flex flex-col gap-2">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500">

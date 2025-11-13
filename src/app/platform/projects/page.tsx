@@ -116,9 +116,7 @@ const PageProjets = () => {
   }
 
   return (
-    <div className="min-h-screen space-y-8">
-
-      <ScreenHeader onActionClick={()=>router.push(pathsUtils.request_form)} title="Mes dossiers d&apos;homologation" actionTitle="Nouvelle demande" desc=""/>
+    <div className="space-y-8">
 
       <div className="max-w-7xl mx-auto px-4 space-y-8">
 
@@ -156,7 +154,7 @@ const PageProjets = () => {
         </Card>
 
         {/* Table des dossiers */}
-        <Card className="mt-4">
+        <Card className="mt-4 p-5">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader className="bg-secondary">
@@ -231,7 +229,7 @@ const PageProjets = () => {
             </Table>
           </div>
 
-          <div className="border-t px-4 py-3 bg-gray-50">
+          <div className="border-t px-4 py-3">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
               <p className="text-xs text-gray-500">
                 Affichage de{" "}

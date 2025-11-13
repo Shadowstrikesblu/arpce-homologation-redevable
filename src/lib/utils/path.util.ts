@@ -4,6 +4,6 @@ export const pathsUtils = {
     dashboard       :       "/platform/",
     profil          :       "/platform/profil/",
     request         :       "/platform/request/",
-    request_form    :       "/platform/request/create/",
+    request_form    :       "/platform/projects/create/",
     projects        :       "/platform/projects/",
 }
