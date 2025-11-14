@@ -166,9 +166,6 @@ const PageProjets = () => {
                     Libellé
                   </TableHead>
                   <TableHead className="text-white uppercase text-xs font-semibold">
-                    Équipement
-                  </TableHead>
-                  <TableHead className="text-white uppercase text-xs font-semibold">
                     Date
                   </TableHead>
                   <TableHead className="text-white uppercase text-xs font-semibold">
@@ -199,9 +196,6 @@ const PageProjets = () => {
                     </TableCell>
                     <TableCell className="font-medium text-gray-800">
                       {projet.libelle}
-                    </TableCell>
-                    <TableCell className="text-gray-700">
-                      {projet.demandes?.[0]?.equipement}
                     </TableCell>
                     <TableCell className="text-gray-600 whitespace-nowrap">
                       {new Date(projet.dateOuverture).toLocaleDateString("fr-FR")}

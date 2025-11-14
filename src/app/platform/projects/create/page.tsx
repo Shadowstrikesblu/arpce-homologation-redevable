@@ -14,6 +14,7 @@ import { ScreenHeader } from "@/lib/components/header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { TypeLibelle } from "@/types/types"
 import { Plus } from "lucide-react"
+import { useAlert } from "@/lib/hooks/useAlert"
 
 // Type pour le formulaire du dossier
 type DossierFormData = {
@@ -28,6 +29,7 @@ export default function MultiDemandesScreen() {
   
   const [activeIndex, setActiveIndex] = React.useState(0)
   const [documentsLetter, setDocumentsLetter] = React.useState<DocumentDemande[]>([])
+  const alert = useAlert()
 
   // Formulaire pour gérer le libellé du dossier
   const [libelle, setLibelle] = React.useState<TypeLibelle>()
@@ -50,10 +52,48 @@ export default function MultiDemandesScreen() {
     )
   }
 
-  const handleAddDemande = () => {
-    setDemandes((prev) => [...prev, createEmptyDemande()])
-    setActiveIndex(demandes.length) 
+  const checkFormData = (idx : number)=>{
+
+    if( !demandes[idx]?.contactEmail)         return false
+    if( !demandes[idx]?.contactNom)           return false
+    if( !demandes[idx]?.type)                 return false
+    if( !demandes[idx]?.quantiteEquipements)  return false
+    if( !demandes[idx]?.marque)               return false
+    if( !demandes[idx]?.modele)               return false
+    if( !demandes[idx]?.fabricant)            return false
+    if( !demandes[idx]?.fabricant)            return false
+    if( !demandes[idx]?.equipement)           return false
+
+    return true 
   }
+
+  const handleAddDemande = () => {
+
+    if(!checkFormData(activeIndex)){
+        alert.confirm(
+          "Confirmation",
+          "Êtes-vous sûr de vouloir perdre les champs saisie de cet equipement ?",
+          
+          () => {
+
+          },
+          () => {
+            setDemandes((item)=>[...item.filter((_, i) => i !== activeIndex)])
+            return;
+          },
+          "warning",
+          "Conserver",
+          "Supprimer",
+        )
+
+        
+    }
+
+    setDemandes((prev) => [...prev, createEmptyDemande()])
+    setActiveIndex(demandes.length == 1 ? 0 : demandes.length - 1) 
+  }
+
+
 
   const activeDemande = demandes[activeIndex]
 
@@ -65,24 +105,18 @@ export default function MultiDemandesScreen() {
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl font-semibold tracking-tight">Dossier</CardTitle>
-            {/* <CardDescription>
-              .
-            </CardDescription> */}
-            {/* Champ "Libellé" avec bouton de validation */}
-            <div className="mt-4">
-              <Input
-                placeholder="Nom du dossier"
-                onChange={(event)=>setLibelle(event.target.value)}
-              />
-            </div>
+            <CardDescription>
+              Initiez votre dossier de certification
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <FileUploader
-              title="Lettre d'homologation"
+              title="Courrier d'homologation"
               accept=".pdf"
               multiple={false}
               maxSizeMb={3}
               onFiles={handleUploadLetter}
+              type={"mail"}
             />
           </CardContent>
         </Card>
@@ -126,7 +160,10 @@ export default function MultiDemandesScreen() {
         )}
       </div>
       
-      <Button className="w-full bg-secondary"> Enregistrer le Dossier</Button>
+      <Button className="w-full bg-secondary" onClick={()=>    alert.success(
+      "Succès",
+      "Votre dossier a été enregistré avec succès."
+    )}> Enregistrer le Dossier</Button>
       
     </div>
   )

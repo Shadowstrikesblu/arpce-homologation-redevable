@@ -150,7 +150,7 @@ const DossierDetails = ({params} : Props ) => {
               </div>
             )}
 
-            {(isRealisee || isAttestationDisponible) && premiereAttestation && (
+            {/* {(isRealisee || isAttestationDisponible) && premiereAttestation && (
               <div className="flex gap-2">
                 <Button 
                   size="sm" 
@@ -160,7 +160,7 @@ const DossierDetails = ({params} : Props ) => {
                   Télécharger le certificat
                 </Button>
               </div>
-            )}
+            )} */}
           </div>
         </div>
 
@@ -280,7 +280,7 @@ const DossierDetails = ({params} : Props ) => {
 
           {/* Onglet informations dossier */}
           <TabsContent value="dossier">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <Card>
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base">
@@ -304,53 +304,8 @@ const DossierDetails = ({params} : Props ) => {
                   </div>
                   <Separator />
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Client</span>
-                    <span className="font-medium">
-                      #{dossier.idClient}
-                    </span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between">
                     <span className="text-gray-500">Statut</span>
                     <span className="font-medium">{statutLibelle}</span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base">Synthèse</CardTitle>
-                  <CardDescription>
-                    Vue rapide sur les demandes, devis et documents.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Nombre de demandes</span>
-                    <span className="font-medium">
-                      {dossier.demandes?.length ?? 0}
-                    </span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Nombre de devis</span>
-                    <span className="font-medium">
-                      {dossier.devis?.length ?? 0}
-                    </span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Nombre de documents</span>
-                    <span className="font-medium">
-                      {dossier.documents?.length ?? 0}
-                    </span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Nombre d'attestations</span>
-                    <span className="font-medium">
-                      {dossier.attestations?.length ?? 0}
-                    </span>
                   </div>
                 </CardContent>
               </Card>

@@ -278,14 +278,6 @@ export default function ScreenPaiement({
       <div className="container max-w-6xl mx-auto px-4">
         {/* Header */}
         <div className="flex items-center space-x-4 mb-8">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => router.back()}
-            className="border-gray-300"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Finaliser le paiement</h1>
             <p className="text-gray-600 mt-1">Choisissez votre mode de règlement</p>
