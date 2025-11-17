@@ -5,14 +5,13 @@ import { useForm } from "react-hook-form"
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { BinaryData, Demande, DocumentDemande, TypeCle, TypeCode, TypeLibelle, TypeNombre, TypeNoms, TypeNomsComplet, TypeRemarques } from "../interfaces/models.interface"
+import {  Demande, DocumentDemande, TypeNombre } from "../interfaces/models.interface"
 import { Input } from "@/components/ui/input"
 import { FileUploader } from "./upload"
-import { Textarea } from "@/components/ui/textarea"
 import { DemandeFormProps } from "../interfaces/requestComponentProps.interface"
 import { fileToDocumentDemande } from "../utils/form.create.utils"
-import { Separator } from "@/components/ui/separator" 
+import { HelpButton } from "./help-button"
+import { useHelp } from "@/context/helpContext"
 
 
 
@@ -31,7 +30,7 @@ export function RequestComponent({
 
   // State final pour voir la Demande complète (typée Demande)
   const [demandeSoumise, setDemandeSoumise] = React.useState<Demande | null>(null)
-
+  const { setHelp } = useHelp()
 
   const handleUploadFicheTechnique = (files: File[]) => {
     const docs = files.map((f) => fileToDocumentDemande(f, "Fiche technique"))
@@ -69,10 +68,14 @@ export function RequestComponent({
     
 
     <div className="mx-auto space-y-8">
-      
-      <h1 className="text-2xl font-semibold tracking-tight">
-        {label}
-      </h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {label}
+        </h1>
+
+        <HelpButton onClick={()=>setHelp("equipement")}/>
+
+      </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* FORMULAIRE SHADCN */}
@@ -207,26 +210,6 @@ export function RequestComponent({
               </div>
 
 
-              {/* Description */}
-              {/* <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description / Justification</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        rows={4}
-                        placeholder="Décrivez le besoin, le contexte, etc."
-                        {...field}
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
-
               {/* Contact */}
               <div className="grid gap-4 md:grid-cols-2">
                 <FormField
@@ -267,8 +250,6 @@ export function RequestComponent({
                 />
               </div>
 
-              {/* Bouton submit */}
-              <Button type="submit"> Enregistrer demande</Button>
             </form>
           </Form>
         </div>
@@ -285,8 +266,13 @@ export function RequestComponent({
             maxSizeMb={3}
             multiple
             onFiles={handleUploadFicheTechnique}
+            type="fiche_technique"
           />
+              <Button type="submit"> Enregistrer demande</Button>
+
         </div>
+
+        
       </div>
     </div>
     

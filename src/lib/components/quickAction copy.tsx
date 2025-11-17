@@ -149,9 +149,9 @@ export function QuickActions() {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-bold text-lg mb-2">Besoin d'aide rapide ?</h3>
+              <h3 className="font-bold text-lg mb-2">Besoin d&apos;aide rapide ?</h3>
               <p className="text-white/80 text-sm">
-                Notre équipe de support est disponible pour vous accompagner dans vos démarches d'homologation.
+                Notre équipe de support est disponible pour vous accompagner dans vos démarches d&apos;homologation.
               </p>
             </div>
             <Button 

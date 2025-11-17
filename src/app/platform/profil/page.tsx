@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { getUserById, updateUser, deleteUser, logout, UpdateClientData } from "@/lib/services/user.service";
 import { Client } from "@/lib/interfaces/models.interface";
-import { LogOut, Trash2, User as UserIcon, Mail, Phone, MapPin, Building2, Save, X, Edit2, Settings } from "lucide-react";
+import { Trash2, User as UserIcon, Mail, Phone, MapPin, Building2, Save, X, Edit2, Settings } from "lucide-react";
 
 export default function ProfilPage() {
 
@@ -115,19 +115,10 @@ export default function ProfilPage() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      router.push("/login");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Erreur lors de la déconnexion");
-      console.error("Erreur:", err);
-    }
-  };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#af3338] border-t-transparent mx-auto"></div>
           <p className="mt-6 text-gray-600 font-medium">Chargement du profil...</p>
@@ -142,7 +133,7 @@ export default function ProfilPage() {
         <div className="text-center bg-white p-8 rounded-2xl shadow-lg">
           <p className="text-[#af3338] mb-6 font-semibold text-lg">Erreur: Impossible de charger le profil</p>
           <Button onClick={() => router.push("/")} className="bg-[#af3338] hover:bg-[#8f2a2e]">
-            Retour à l'accueil
+            Retour à l&apos;accueil
           </Button>
         </div>
       </div>
@@ -152,7 +143,7 @@ export default function ProfilPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50 to-gray-100">
       {/* Header avec couleur primaire */}
-      <div className="bg-gradient-to-r from-[#af3338] to-[#c9454a] text-white shadow-lg">
+      <div className="bg-gradient-to-r from-[#af3338] to-[#c9454a] text-white shadow-lg rounded-b-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row items-center md:items-end gap-6">
             {/* Avatar */}
@@ -186,14 +177,6 @@ export default function ProfilPage() {
                 >
                   <Edit2 className="h-4 w-4 mr-2" />
                   Modifier
-                </Button>
-                <Button
-                  onClick={handleLogout}
-                  variant="outline"
-                  className="bg-white/10 hover:bg-white/20 text-white border-white/30"
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Déconnexion
                 </Button>
               </div>
             )}
@@ -451,14 +434,6 @@ export default function ProfilPage() {
               ) : (
                 <div className="space-y-3">
                  
-                  <Button
-                    onClick={handleLogout}
-                    variant="outline"
-                    className="w-full border-2 border-gray-300 hover:bg-gray-50 font-semibold py-6 text-base"
-                  >
-                    <LogOut className="h-5 w-5 mr-2" />
-                    Se déconnecter
-                  </Button>
                   <Button
                     onClick={() => setShowDeleteDialog(true)}
                     variant="destructive"

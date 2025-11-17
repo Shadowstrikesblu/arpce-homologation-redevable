@@ -5,10 +5,6 @@ import { Badge } from '@/components/ui/badge'
 import { 
   Download, 
   FileText, 
-  Calendar, 
-  User, 
-  Building,
-  CheckCircle,
   Eye,
   Clock
 } from 'lucide-react'

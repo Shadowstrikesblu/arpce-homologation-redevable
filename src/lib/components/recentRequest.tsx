@@ -45,7 +45,6 @@ export function RecentDemandsTable({ demands, onViewMore, onViewDetails }: Recen
                 <tr>
                   <th className="px-4 py-3">N° dossier</th>
                   <th className="px-4 py-3">Équipement</th>
-                  <th className="px-4 py-3">Contact</th>
                   <th className="px-4 py-3">Statut</th>
                   <th className="px-4 py-3">Date</th>
                   <th className="px-4 py-3 text-right">Action</th>
@@ -59,7 +58,6 @@ export function RecentDemandsTable({ demands, onViewMore, onViewDetails }: Recen
                     <tr key={demand.id} className="transition hover:bg-gray-50/70">
                       <td className="px-4 py-3 font-medium text-gray-900">{demand.numeroDemande}</td>
                       <td className="px-4 py-3 text-gray-700">{demand.equipement}</td>
-                      <td className="px-4 py-3 text-gray-600">{demand.contactNom}</td>
                       <td className="px-4 py-3">
                         <Badge className={status.className} variant="secondary">
                           {status.label}
