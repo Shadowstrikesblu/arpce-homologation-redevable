@@ -3,7 +3,7 @@
 
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Plus, FileText, Settings, HelpCircle, LifeBuoy, Clock } from 'lucide-react'
+import { Plus, FileText, Settings, HelpCircle, Clock } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { pathsUtils } from '../utils/path.util'
 
@@ -110,9 +110,9 @@ export function SupportAndHelpSection() {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-bold text-lg mb-2">Besoin d'aide rapide ?</h3>
+              <h3 className="font-bold text-lg mb-2">Besoin d&apos;aide rapide ?</h3>
               <p className="text-white/80 text-sm">
-                Notre équipe de support est disponible pour vous accompagner dans vos démarches d'homologation.
+                Notre équipe de support est disponible pour vous accompagner dans vos démarches d&apos;homologation.
               </p>
             </div>
             <Button 

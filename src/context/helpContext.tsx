@@ -3,7 +3,7 @@
 
 import * as React from "react"
 
-export type HelpType = "upload" | "homologation" | "documents" | "validation" | "mail" | "fiche_technique" | "equipement" | string
+export type HelpType = "upload" | "homologation" | "documents" | "validation" | "mail" | "fiche_technique" | "equipement" | "payment" |string
 
 interface HelpContextType {
   currentHelp: HelpType | null

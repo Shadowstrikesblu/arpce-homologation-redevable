@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo } from "react";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -20,21 +19,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
-import { Loader2, AlertTriangle } from "lucide-react";
 import projetsMock from "@/lib/mock/dossier.mock";
 import { useRouter } from "next/navigation";
 import SystemLoader from "@/lib/components/loader";
-import { ScreenHeader } from "@/lib/components/header";
 import { pathsUtils } from "@/lib/utils/path.util";
 import { Pagination } from "@/lib/components/pagination";
 
 type SortOption = "date_desc" | "date_asc" | "numero_asc";
-
-interface PaginationProps {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-}
 
 
 const PageProjets = () => {

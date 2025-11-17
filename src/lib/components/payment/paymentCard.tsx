@@ -1,7 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { CreditCard, ArrowRight, Smartphone } from 'lucide-react'
+import { CreditCard, ArrowRight } from 'lucide-react'
 
 interface PaymentCardProps {
   dossier: {

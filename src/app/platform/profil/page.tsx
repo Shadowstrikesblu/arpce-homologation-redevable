@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { getUserById, updateUser, deleteUser, logout, UpdateClientData } from "@/lib/services/user.service";
 import { Client } from "@/lib/interfaces/models.interface";
-import { LogOut, Trash2, User as UserIcon, Mail, Phone, MapPin, Building2, Save, X, Edit2, Settings } from "lucide-react";
+import { Trash2, User as UserIcon, Mail, Phone, MapPin, Building2, Save, X, Edit2, Settings } from "lucide-react";
 
 export default function ProfilPage() {
 
@@ -115,19 +115,10 @@ export default function ProfilPage() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      router.push("/login");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Erreur lors de la déconnexion");
-      console.error("Erreur:", err);
-    }
-  };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#af3338] border-t-transparent mx-auto"></div>
           <p className="mt-6 text-gray-600 font-medium">Chargement du profil...</p>
@@ -142,7 +133,7 @@ export default function ProfilPage() {
         <div className="text-center bg-white p-8 rounded-2xl shadow-lg">
           <p className="text-[#af3338] mb-6 font-semibold text-lg">Erreur: Impossible de charger le profil</p>
           <Button onClick={() => router.push("/")} className="bg-[#af3338] hover:bg-[#8f2a2e]">
-            Retour à l'accueil
+            Retour à l&apos;accueil
           </Button>
         </div>
       </div>

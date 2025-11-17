@@ -4,7 +4,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { DashboardStats, PendingPayment, RecentDemand } from '@/lib/types/dashboard.types'
-import { DashboardHeader } from '@/lib/components/dashboardHeader'
 import { StatsCards } from '@/lib/components/statsDahsboardCard'
 import { PendingPaymentsTable } from '@/lib/components/pendingPayment'
 import { RecentDemandsTable } from '@/lib/components/recentRequest'

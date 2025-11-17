@@ -33,6 +33,7 @@ export function PaiementUpload({
         multiple={multiple}
         maxSizeMb={maxSizeMb}
         onFiles={handleFiles}
+        type="payment"
       />
     </div>
   )

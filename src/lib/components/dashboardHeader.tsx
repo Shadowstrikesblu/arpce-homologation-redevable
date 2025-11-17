@@ -54,8 +54,10 @@ export function DashboardHeader() {
 
   useEffect(()=>{
     const text = getResourceFromPath(pathname)
-    setLast(text)
+    if(text) setLast(text)
 
+    return;
+    
   }, [pathname])
 
   return (

@@ -1,6 +1,5 @@
 "use client";
 
-import { Dossier } from "@/types/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -26,11 +25,10 @@ import {
 } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { use, useMemo } from "react";
 import projetsMock from "@/lib/mock/dossier.mock";
-import { ArrowLeft, Download, FileText, CreditCard } from "lucide-react";
-import { AttestationCard } from "@/lib/components/attestationCard";
+import { Download, FileText, CreditCard } from "lucide-react";
 import { PaymentCard } from "@/lib/components/payment/paymentCard";
 import { pathsUtils } from "@/lib/utils/path.util";
 
@@ -179,7 +177,7 @@ const DossierDetails = ({params} : Props ) => {
 
         {isEnAttentePaiement && (
           <PaymentCard 
-            dossier={dossier} 
+            dossier={{ montantTotal : 100, taxe : 20, statutPaiement : 'en_attente' }} 
             onPaymentClick={() => router.push(pathsUtils.projects + id + "/payment")}
           />
         )}

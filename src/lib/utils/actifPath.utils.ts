@@ -1,9 +1,9 @@
-import { ReactNode } from "react";
 
-export function getResourceFromPath(pathname: string): string {
+export function getResourceFromPath(pathname?: string) {
 
     if (!pathname) return '';
-
+    
+    // @ts-ignore
     const clean = pathname.split('?')[0].replace(/\/+$/, '');
 
     const parts = clean.split('/').filter(Boolean);
@@ -14,7 +14,7 @@ export function getResourceFromPath(pathname: string): string {
 
     const last = parts[parts.length - 1];
 
-    if (!isParam(last)) {
+    if (last && !isParam(last)) {
         return last;
     }
 

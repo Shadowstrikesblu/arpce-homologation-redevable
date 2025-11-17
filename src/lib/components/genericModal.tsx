@@ -1,7 +1,6 @@
 // components/generic-modal.tsx
 "use client"
 
-import * as React from "react"
 import {
   Dialog,
   DialogContent,

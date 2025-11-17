@@ -15,7 +15,6 @@ import {
   Smartphone, 
   Building, 
   CheckCircle2,
-  ArrowLeft,
   Loader
 } from "lucide-react"
 import { useRouter } from "next/navigation"
@@ -69,6 +68,7 @@ function PaiementUpload({
         multiple={multiple}
         maxSizeMb={maxSizeMb}
         onFiles={handleFiles}
+        type="upload"
       />
     </div>
   )

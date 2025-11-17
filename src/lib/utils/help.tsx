@@ -22,7 +22,7 @@ export const HELP_CONTENT: Record<HelpType, { title: string; content: React.Reac
     title: "Aide - Dossier d'homologation",
     content: (
       <div className="space-y-4">
-        <p className="font-semibold text-sm">Processus d'homologation :</p>
+        <p className="font-semibold text-sm">Processus d&apos;homologation :</p>
         <ul className="list-disc list-inside space-y-2 text-sm">
           <li>Rassemblez tous les documents techniques requis</li>
           <li>Vérifiez la conformité aux normes en vigueur</li>
@@ -42,8 +42,8 @@ export const HELP_CONTENT: Record<HelpType, { title: string; content: React.Reac
                 Nature du document
             </p>
             <p className="text-blue-800 text-sm">
-                Ce courrier est la lettre formelle de demande d'homologation adressée 
-                au Directeur Général de l'ARPCE (Autorité de Régulation des Postes et Télécommunications du Congo).
+                Ce courrier est la lettre formelle de demande d&apos;homologation adressée 
+                au Directeur Général de l&apos;ARPCE (Autorité de Régulation des Postes et Télécommunications du Congo).
             </p>
             </div>
 
@@ -52,14 +52,14 @@ export const HELP_CONTENT: Record<HelpType, { title: string; content: React.Reac
             <ul className="list-disc list-inside space-y-2 text-sm">
                 <li>
                 <span className="font-medium">Demande officielle :</span> Introduire formellement 
-                la demande d'homologation auprès de l'autorité réglementaire
+                la demande d&apos;homologation auprès de l&apos;autorité réglementaire
                 </li>
                 <li>
                 <span className="font-medium">Cadre légal :</span> Respecter les procédures 
-                administratives de l'ARPCE Congo
+                administratives de l&apos;ARPCE Congo
                 </li>
                 <li>
-                <span className="font-medium">Engagement :</span> Manifester l'engagement 
+                <span className="font-medium">Engagement :</span> Manifester l&apos;engagement 
                 du redevable à se conformer à la réglementation
                 </li>
                 <li>
@@ -72,14 +72,14 @@ export const HELP_CONTENT: Record<HelpType, { title: string; content: React.Reac
             <div>
             <p className="font-semibold text-sm mb-3">Contenu requis dans le courrier :</p>
             <ul className="list-disc list-inside space-y-2 text-sm">
-                <li>En-tête avec coordonnées complètes de l'entreprise</li>
-                <li>Destinataire : "Monsieur le Directeur Général de l'ARPCE"</li>
-                <li>Objet clair : "Demande d'homologation d'équipement télécom"</li>
+                <li>En-tête avec coordonnées complètes de l&apos;entreprise</li>
+                <li>Destinataire : &quot;Monsieur le Directeur Général de l&apos;ARPCE&quot;</li>
+                <li>Objet clair : &quot;Demande d&apos;homologation d&apos;équipement télécom&quot;</li>
                 <li>Référence à la réglementation congolaise applicable</li>
-                <li>Description précise de l'équipement à homologuer</li>
+                <li>Description précise de l&apos;équipement à homologuer</li>
                 <li>Engagement de conformité aux normes techniques</li>
                 <li>Liste des pièces jointes au dossier</li>
-                <li>Signature du représentant légal de l'entreprise</li>
+                <li>Signature du représentant légal de l&apos;entreprise</li>
             </ul>
             </div>
 
@@ -107,7 +107,7 @@ export const HELP_CONTENT: Record<HelpType, { title: string; content: React.Reac
           </p>
           <p className="text-blue-800 text-sm">
             La fiche technique est le document de référence qui décrit précisément 
-            les caractéristiques techniques et les performances de l'équipement 
+            les caractéristiques techniques et les performances de l&apos;équipement 
             soumis à homologation.
           </p>
         </div>
@@ -116,20 +116,20 @@ export const HELP_CONTENT: Record<HelpType, { title: string; content: React.Reac
           <p className="font-semibold text-sm mb-3">Pourquoi cette fiche est obligatoire :</p>
           <ul className="list-disc list-inside space-y-2 text-sm">
             <li>
-              <span className="font-medium">Vérification technique :</span> Permet à l'ARPCE 
+              <span className="font-medium">Vérification technique :</span> Permet à l&apos;ARPCE 
               de contrôler la conformité aux normes techniques congolaises
             </li>
             <li>
-              <span className="font-medium">Évaluation sécurité :</span> Vérifie que l'équipement 
+              <span className="font-medium">Évaluation sécurité :</span> Vérifie que l&apos;équipement 
               respecte les exigences de sécurité électrique et électromagnétique
             </li>
             <li>
-              <span className="font-medium">Compatibilité réseau :</span> Assure que l'équipement 
-              n'interfère pas avec les réseaux télécoms existants
+              <span className="font-medium">Compatibilité réseau :</span> Assure que l&apos;équipement 
+              n&apos;interfère pas avec les réseaux télécoms existants
             </li>
             <li>
               <span className="font-medium">Traçabilité :</span> Document de référence pour 
-              le suivi et le contrôle du parc d'équipements
+              le suivi et le contrôle du parc d&apos;équipements
             </li>
           </ul>
         </div>
@@ -143,7 +143,7 @@ export const HELP_CONTENT: Record<HelpType, { title: string; content: React.Reac
                 <ul className="mt-1 space-y-1">
                   <li>• Marque et modèle exact</li>
                   <li>• Numéro de série/type</li>
-                  <li>• Fabricant et pays d'origine</li>
+                  <li>• Fabricant et pays d&apos;origine</li>
                   <li>• Version du logiciel/firmware</li>
                 </ul>
               </div>
@@ -191,7 +191,7 @@ export const HELP_CONTENT: Record<HelpType, { title: string; content: React.Reac
             Bonnes pratiques
           </p>
           <ul className="list-disc list-inside space-y-2 text-green-800 text-sm">
-            <li>Utiliser le modèle de fiche technique fourni par l'ARPTE si disponible</li>
+            <li>Utiliser le modèle de fiche technique fourni par l&apos;ARPCE si disponible</li>
             <li>Faire certifier la fiche par le fabricant ou un laboratoire accrédité</li>
             <li>Inclure les logos et marquages CE/FCC le cas échéant</li>
             <li>Fournir une traduction française si le document original est en autre langue</li>
@@ -211,7 +211,7 @@ export const HELP_CONTENT: Record<HelpType, { title: string; content: React.Reac
           </p>
           <p className="text-secondary text-sm">
             Les équipements soumis à homologation sont classés selon leur type, 
-            leur technologie et leur domaine d'utilisation dans le réseau télécom.
+            leur technologie et leur domaine d&apos;utilisation dans le réseau télécom.
           </p>
 
         </div>
