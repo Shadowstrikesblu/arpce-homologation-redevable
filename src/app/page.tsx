@@ -1,7 +1,7 @@
 // app/dashboard/page.tsx
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { DashboardStats, PendingPayment, RecentDemand } from '@/lib/types/dashboard.types'
 import { DashboardHeader } from '@/lib/components/dashboardHeader'
@@ -28,7 +28,6 @@ const mockRecentDemands: RecentDemand[] = [
     equipement: 'Serveur HP ProLiant',
     statut: 'success',
     dateCreation: '2024-01-15',
-    contactNom: 'Jean Dupont'
   },
   // ... autres données
 ]
@@ -40,14 +39,13 @@ const mockPendingPayments: PendingPayment[] = [
     montant: 2500,
     dateEcheance: '2024-02-01',
     modeReglement: 'Virement',
-    client: 'Entreprise ABC'
   },
   // ... autres données
 ]
 
 export default function DashboardPage() {
   const router = useRouter()
-  const [activeSection, setActiveSection] = useState<'main' | 'notifications' | 'profile'>('main')
+  // const [activeSection, setActiveSection] = useState<'main' | 'notifications' | 'profile'>('main')
   const [stats, setStats] = useState<DashboardStats>(mockStats)
   const [recentDemands, setRecentDemands] = useState<RecentDemand[]>(mockRecentDemands)
   const [pendingPayments, setPendingPayments] = useState<PendingPayment[]>(mockPendingPayments)
