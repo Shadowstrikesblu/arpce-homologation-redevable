@@ -3,32 +3,18 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Button } from '@/components/ui/button'
-import { Plus, UserCircle2, ChevronDown, User2, LogOut, HelpCircle, LifeBuoy } from 'lucide-react'
+import { UserCircle2, ChevronDown, User2, LogOut, HelpCircle, LifeBuoy } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { pathsUtils } from '../utils/path.util'
 import { logout } from "@/lib/services/user.service"
 
 export function DashboardHeader() {
   const router = useRouter()
-  const [clientName, setClientName] = useState<string | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement | null>(null)
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedUser = localStorage.getItem("user")
-      if (storedUser) {
-        try {
-          const parsed = JSON.parse(storedUser)
-          if (parsed?.raisonSociale) {
-            setClientName(parsed.raisonSociale)
-          }
-        } catch (error) {
-          console.warn("Impossible de parser l'utilisateur en localStorage", error)
-        }
-      }
-    }
-  }, [])
+  // Nom d'utilisateur fixe pour le développement, en attendant le backend
+  const clientName = "Sylvia"
 
   useEffect(() => {
     const onClickOutside = (event: MouseEvent) => {
@@ -54,25 +40,15 @@ export function DashboardHeader() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-6">
           <div>
-            <h1 className="text-3xl font-bold flex flex-wrap items-center gap-2">
-              Tableau de bord
-              {clientName && (
-                <span className="text-lg font-medium text-white/80 leading-none">
-                  • {clientName}
-                </span>
-              )}
+            
+            <h1 className="text-3xl font-bold">
+              Bienvenue, {clientName} !
             </h1>
-            <p className="text-white/80 mt-1">Bienvenue sur votre portail d'homologation</p>
+            <p className="text-white/80 mt-1">Votre portail d'homologation</p>
           </div>
           
           <div className="flex items-center space-x-4">
-            <Button
-              onClick={() => router.push(pathsUtils.request_form)}
-              className="bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm px-6 py-3 font-semibold"
-            >
-              <Plus className="h-5 w-5 mr-2" />
-              Nouveau dossier
-            </Button>
+            {/* Le bouton "Nouveau dossier" a été supprimé comme demandé */}
 
             <div className="relative" ref={menuRef}>
               <button
