@@ -13,24 +13,35 @@ import { fileToDocumentDemande } from "../utils/form.create.utils"
 import { HelpButton } from "./help-button"
 import { useHelp } from "@/context/helpContext"
 
+export interface RequestComponentRef {
+  getCurrentValues: () => Demande | null
+}
 
-
-export function RequestComponent({
+export const RequestComponent = React.forwardRef<RequestComponentRef, DemandeFormProps>(({
   initialValue,
   label,
   onSubmitDemande
-}: DemandeFormProps) {
+}, ref) => {
 
   const form = useForm<Demande>({
     defaultValues: initialValue,
   })
 
-
   const [documentsFicheTechnique, setDocumentsFicheTechnique] = React.useState<DocumentDemande[]>([])
 
-  // State final pour voir la Demande complète (typée Demande)
   const [demandeSoumise, setDemandeSoumise] = React.useState<Demande | null>(null)
   const { setHelp } = useHelp()
+
+  React.useImperativeHandle(ref, () => ({
+    getCurrentValues: () => {
+      const values = form.getValues()
+      const tousLesDocs: DocumentDemande[] = [...documentsFicheTechnique]
+      return {
+        ...values,
+        documentsDemandes: tousLesDocs,
+      }
+    }
+  }))
 
   const handleUploadFicheTechnique = (files: File[]) => {
     const docs = files.map((f) => fileToDocumentDemande(f, "Fiche technique"))
@@ -277,4 +288,6 @@ export function RequestComponent({
     </div>
     
   )
-}
+})
+
+RequestComponent.displayName = "RequestComponent"
