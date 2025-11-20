@@ -1,61 +1,29 @@
-import axiosClient from "../utils/axiosBase";
-
-export interface DashboardStatsInt {
-  total: number;
-  success: number;
-  failed: number;
-  inProgress: number;
-  pendingPayments: number;
-}
-
-export interface StatutInt {
-  id: string;
-  code: string;
-  libelle: string;
-}
-
-export interface DemandeInt {
-  id: string;
-  idDossier: string;
-  numeroDemande: string;
-  equipement: string;
-  modele: string;
-  marque: string;
-}
-
-export interface RecentFileInt {
-  id: string;
-  idClient: string;
-  idStatut: string;
-  idModeReglement: string;
-  dateOuverture: string;
-  numero: string;
-  libelle: string;
-  statut: StatutInt;
-  demandes: DemandeInt[];
-}
-
-export interface PendingPaymentsInt {
-  id: string;
-  numeroDemande: string | null; 
-  montant: number;
-  dateEcheance: string;
-  modeReglementLibelle: string;
-}
+import axiosClient from "@/lib/utils/axiosBase";
+import {
+  DashboardStats,
+  RecentDemand,
+  PendingPayment,
+} from "@/lib/types/dashboard.types";
 
 export const dashboardStats = {
-  getFile: async (): Promise<DashboardStatsInt> => {
+  // Aperçu général du dashboard
+  getStats: async (): Promise<DashboardStats> => {
     const { data } = await axiosClient.get("/api/dossiers/apercu");
     return data;
   },
 
-  getRecentFile: async (): Promise<RecentFileInt> => {
+  // Dernières demandes
+  getRecentDemand: async (): Promise<RecentDemand[]> => {
     const { data } = await axiosClient.get("/api/dossiers/recents");
-    return data;
+    // si l'API renvoie un objet unique, on le met dans un tableau
+    return Array.isArray(data) ? data : [data];
   },
 
-  getPendingPayments: async (dossierId: number): Promise<PendingPaymentsInt> => {
-    const { data } = await axiosClient.get(`/api/dossiers/${dossierId}/paiement-en-attente`);
+  // Paiements en attente d’un dossier
+  getPendingPayments: async (dossierId: string): Promise<PendingPayment> => {
+    const { data } = await axiosClient.get(
+      `/api/dossiers/${dossierId}/paiement-en-attente`
+    ); // singulier
     return data;
   },
 };
