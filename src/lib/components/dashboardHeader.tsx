@@ -11,27 +11,13 @@ import { getResourceFromPath, translateRessource } from "../utils/actifPath.util
 
 export function DashboardHeader() {
   const router = useRouter()
-  const [clientName, setClientName] = useState<string | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement | null>(null)
   const pathname = usePathname()
   const [last, setLast] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedUser = localStorage.getItem("user")
-      if (storedUser) {
-        try {
-          const parsed = JSON.parse(storedUser)
-          if (parsed?.raisonSociale) {
-            setClientName(parsed.raisonSociale)
-          }
-        } catch (error) {
-          console.warn("Impossible de parser l'utilisateur en localStorage", error)
-        }
-      }
-    }
-  }, [])
+  // Nom d'utilisateur fixe pour le développement, en attendant le backend
+  const clientName = "Sylvia"
 
   useEffect(() => {
     const onClickOutside = (event: MouseEvent) => {
