@@ -206,7 +206,7 @@ const PageProjets = () => {
                       </span>
                     </TableCell>
                     <TableCell className="font-semibold text-[#8ba755] whitespace-nowrap">
-                      {projet.demandes?.[0]?.quantiteEquipements} unités
+                      {projet.demandes?.[0]?.quantiteEquipements}
                     </TableCell>
                   </TableRow>
                 ))}
