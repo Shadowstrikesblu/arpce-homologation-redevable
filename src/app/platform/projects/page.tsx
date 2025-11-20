@@ -24,6 +24,7 @@ import { pathsUtils } from "@/lib/utils/path.util";
 import { Pagination } from "@/lib/components/pagination";
 import { dossiers, ListeDossiersParams, DossierListItem } from "@/lib/endpoints/dossiers";
 
+
 type SortOption = "date_desc" | "date_asc" | "numero_asc";
 
 const PageProjets = () => {
