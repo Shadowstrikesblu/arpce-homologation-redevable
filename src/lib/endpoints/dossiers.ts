@@ -188,6 +188,7 @@ export const dossiers = {
     dossierId: string,
     input: AjouterEquipementInput
   ): Promise<boolean> => {
+    
     const formData = new FormData();
     formData.append("IdDossier", input.IdDossier);
     formData.append("Equipement", input.Equipement);
