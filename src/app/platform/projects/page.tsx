@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo } from "react";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -20,21 +19,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
-import { Loader2, AlertTriangle } from "lucide-react";
 import projetsMock from "@/lib/mock/dossier.mock";
 import { useRouter } from "next/navigation";
 import SystemLoader from "@/lib/components/loader";
-import { ScreenHeader } from "@/lib/components/header";
 import { pathsUtils } from "@/lib/utils/path.util";
 import { Pagination } from "@/lib/components/pagination";
 
 type SortOption = "date_desc" | "date_asc" | "numero_asc";
-
-interface PaginationProps {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-}
 
 
 const PageProjets = () => {
@@ -116,9 +107,7 @@ const PageProjets = () => {
   }
 
   return (
-    <div className="min-h-screen space-y-8">
-
-      <ScreenHeader onActionClick={()=>router.push(pathsUtils.request_form)} title="Mes dossiers d&apos;homologation" actionTitle="Nouvelle demande" desc=""/>
+    <div className="space-y-8">
 
       <div className="max-w-7xl mx-auto px-4 space-y-8">
 
@@ -156,7 +145,7 @@ const PageProjets = () => {
         </Card>
 
         {/* Table des dossiers */}
-        <Card className="mt-4">
+        <Card className="mt-4 p-5">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader className="bg-secondary">
@@ -166,9 +155,6 @@ const PageProjets = () => {
                   </TableHead>
                   <TableHead className="text-white uppercase text-xs font-semibold">
                     Libellé
-                  </TableHead>
-                  <TableHead className="text-white uppercase text-xs font-semibold">
-                    Équipement
                   </TableHead>
                   <TableHead className="text-white uppercase text-xs font-semibold">
                     Date
@@ -202,9 +188,6 @@ const PageProjets = () => {
                     <TableCell className="font-medium text-gray-800">
                       {projet.libelle}
                     </TableCell>
-                    <TableCell className="text-gray-700">
-                      {projet.demandes?.[0]?.equipement}
-                    </TableCell>
                     <TableCell className="text-gray-600 whitespace-nowrap">
                       {new Date(projet.dateOuverture).toLocaleDateString("fr-FR")}
                     </TableCell>
@@ -231,7 +214,7 @@ const PageProjets = () => {
             </Table>
           </div>
 
-          <div className="border-t px-4 py-3 bg-gray-50">
+          <div className="border-t px-4 py-3">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
               <p className="text-xs text-gray-500">
                 Affichage de{" "}

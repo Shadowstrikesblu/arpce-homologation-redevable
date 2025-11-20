@@ -14,7 +14,6 @@ export interface RecentDemand {
   equipement: string;
   statut: 'success' | 'failed' | 'inProgress' | 'pending';
   dateCreation: string;
-  contactNom: string;
 }
 
 export interface PendingPayment {
@@ -23,5 +22,4 @@ export interface PendingPayment {
   montant: number;
   dateEcheance: string;
   modeReglement: string;
-  client: string;
 }
