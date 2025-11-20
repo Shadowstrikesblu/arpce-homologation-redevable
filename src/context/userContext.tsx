@@ -13,6 +13,7 @@ import React, {
 import { usePathname, useRouter } from "next/navigation";
 import { inherits } from "util";
 import { Client } from "@/lib/interfaces/models.interface";
+import SystemLoader from "@/lib/components/loader";
 
 export interface User extends Client {}
 
@@ -47,11 +48,11 @@ export function UserProvider({ children }: PropsWithChildren) {
     }
 
 
-    if (!user) {
-        const next = encodeURIComponent(pathname || "/");
-        router.replace(`/auth/login?next=${next}`);
-        return;
-    }
+    // if (!user) {
+    //     const next = encodeURIComponent(pathname || "/");
+    //     router.replace(`/auth/login?next=${next}`);
+    //     return;
+    // }
 
     setIsCheckingAuth(false);
 
@@ -59,7 +60,7 @@ export function UserProvider({ children }: PropsWithChildren) {
 
 
     if (isCheckingAuth) {
-        return null; 
+        return <SystemLoader/>; 
     }
 
     return (

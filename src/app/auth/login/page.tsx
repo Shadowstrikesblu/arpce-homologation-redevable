@@ -31,18 +31,13 @@ export default function LoginPage() {
         return;
       }
 
-      const response = await auth.login({
+      await auth.login({
         email: formData.email,
         password: formData.password,
       });
 
-      console.log(response);
-      
-      if (response.user) {
-        
-      }
 
-      router.push("/platform");
+      router.replace("/platform");
       
     } catch (err: any) {
       let errorMessage = "Erreur lors de la connexion. Vérifiez vos identifiants.";
