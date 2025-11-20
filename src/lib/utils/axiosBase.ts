@@ -28,9 +28,8 @@ axiosClient.interceptors.response.use(
 
     if (typeof window !== "undefined") {
         const storageKey = process.env["NEXT_PUBLIC_LOCALSTORAGE_TOKEN_KEY"];
-
         if (response?.data?.token) {
-        localStorage.setItem(storageKey, response.data.token);
+            localStorage.setItem(storageKey, response.data.token);
         }
     }
 
