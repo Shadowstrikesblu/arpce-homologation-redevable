@@ -42,3 +42,12 @@ export interface Demande {
   contactNom: string;
   contactEmail: string;
 }
+
+export interface Inscription 
+  {
+  raisonSociale: string
+  email: string,
+  password: string,
+  contactNom: string,
+  contactTelephone: string
+}
