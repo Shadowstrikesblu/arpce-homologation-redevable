@@ -25,7 +25,7 @@ export const auth = {
 
     register : async (input : RegisterInt)=>{
 
-        const {data} = await axiosClient.post("/api/auth/register", input)
+        const {data} = await axiosClient.post("/api/auth/register", {...input})
 
         return data 
     }
