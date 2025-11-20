@@ -6,57 +6,67 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { authService, LoginCredentials } from "@/lib/services/auth.service";
+import { auth } from "@/lib/endpoints/auth";
 import { Mail, Lock, Loader2, Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [formData, setFormData] = useState<LoginCredentials>({
+  const [formData, setFormData] = useState({
     email: "",
-    motPasse: "",
+    password: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
-  /**
-   * Gère la soumission du formulaire de connexion
-   */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
 
     try {
-      // Validation basique
-      if (!formData.email || !formData.motPasse) {
+      if (!formData.email || !formData.password) {
         setError("Veuillez remplir tous les champs");
         setLoading(false);
         return;
       }
 
-      // Appel du service d'authentification
-      await authService.login(formData);
+      await auth.login({
+        email: formData.email,
+        password: formData.password,
+      });
 
-      // Redirection vers le dashboard après connexion réussie
-      router.push("/platform");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Erreur lors de la connexion");
+
+      router.replace("/platform");
+      
+    } catch (err: any) {
+      let errorMessage = "Erreur lors de la connexion. Vérifiez vos identifiants.";
+      
+      if (err?.response?.status === 401) {
+
+        errorMessage = "L'adresse email ou le mot de passe est incorrect.";
+
+      } else if (err?.response?.data?.message) {
+
+        errorMessage = err.response.data.message;
+
+      } else if (err?.message) {
+
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  /**
-   * Gère les changements dans les champs du formulaire
-   */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-    // Effacer l'erreur quand l'utilisateur modifie un champ
     if (error) setError(null);
   };
 
@@ -106,17 +116,17 @@ export default function LoginPage() {
 
             {/* Champ Mot de passe */}
             <div className="space-y-2">
-              <label htmlFor="motPasse" className="text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="text-sm font-medium text-gray-700">
                 Mot de passe
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <Input
-                  id="motPasse"
-                  name="motPasse"
+                  id="password"
+                  name="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  value={formData.motPasse}
+                  value={formData.password}
                   onChange={handleChange}
                   className="pl-10 pr-10"
                   required

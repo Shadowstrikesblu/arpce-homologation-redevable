@@ -18,7 +18,6 @@ export interface RegisterInt {
 export const auth = {
 
     login : async (input : loginInt)=>{
-
         const {data} = await axiosClient.post("/api/auth/login", input)
 
         return data 
@@ -26,7 +25,7 @@ export const auth = {
 
     register : async (input : RegisterInt)=>{
 
-        const {data} = await axiosClient.post("/api/auth/login", input)
+        const {data} = await axiosClient.post("/api/auth/register", {...input})
 
         return data 
     }

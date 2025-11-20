@@ -28,7 +28,7 @@ export interface RecentFileInt {
   idClient: string;
   idStatut: string;
   idModeReglement: string;
-  dateOuverture: string; // ou Date si tu veux parser
+  dateOuverture: string;
   numero: string;
   libelle: string;
   statut: StatutInt;
@@ -36,10 +36,10 @@ export interface RecentFileInt {
 }
 
 export interface PendingPaymentsInt {
-  id: string; // UUID
-  numeroDemande: string | null; // nullable
-  montant: number; // double
-  dateEcheance: string; // ISO date-time
+  id: string;
+  numeroDemande: string | null; 
+  montant: number;
+  dateEcheance: string;
   modeReglementLibelle: string;
 }
 
