@@ -19,7 +19,7 @@ export const auth = {
 
     login : async (input : loginInt)=>{
         const {data} = await axiosClient.post("/api/auth/login", input)
-        
+
         return data 
     },
 

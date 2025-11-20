@@ -31,25 +31,32 @@ export default function LoginPage() {
         return;
       }
 
-      const response = await auth.login({
+      await auth.login({
         email: formData.email,
         password: formData.password,
       });
 
-      const tokenKey = process.env.NEXT_PUBLIC_LOCALSTORAGE_TOKEN_KEY?.replace(/"/g, "") || "access_token";
-      
-      localStorage.setItem(tokenKey, response.access_token);
-      
-      if (response.user) {
-        localStorage.setItem("user", JSON.stringify(response.user));
-      }
 
-      router.push("/platform");
+      router.replace("/platform");
       
     } catch (err: any) {
-        const errorMessage = err?.response?.data?.message || err?.message || "Erreur lors de la connexion. Vérifiez vos identifiants.";
-            setError(errorMessage);
-    }   finally {
+      let errorMessage = "Erreur lors de la connexion. Vérifiez vos identifiants.";
+      
+      if (err?.response?.status === 401) {
+
+        errorMessage = "L'adresse email ou le mot de passe est incorrect.";
+
+      } else if (err?.response?.data?.message) {
+
+        errorMessage = err.response.data.message;
+
+      } else if (err?.message) {
+
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
+    } finally {
       setLoading(false);
     }
   };
