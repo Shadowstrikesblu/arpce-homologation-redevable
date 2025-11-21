@@ -220,8 +220,10 @@ const PageProjets = () => {
                     <TableCell className="text-gray-600">
                     {/* en attendant de savoir ce que je dois y mettre*/}
                       -
+                    </TableCell>
+
                     <TableCell className="font-semibold text-[#8ba755] whitespace-nowrap">
-                      {projet.demandes?.[0]?.quantiteEquipements}
+                      {0}
                     </TableCell>
                   </TableRow>
                 ))}
