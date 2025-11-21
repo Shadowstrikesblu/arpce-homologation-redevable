@@ -8,30 +8,18 @@ import { usePathname, useRouter } from 'next/navigation'
 import { pathsUtils } from '../utils/path.util'
 import { logout } from "@/lib/services/user.service"
 import { getResourceFromPath, translateRessource } from "../utils/actifPath.utils"
+import { useUser } from "@/context/userContext"
+import Image from "next/image";
 
 export function DashboardHeader() {
   const router = useRouter()
-  const [clientName, setClientName] = useState<string | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement | null>(null)
   const pathname = usePathname()
   const [last, setLast] = useState<string | null>(null)
+  const [user] = useUser()
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedUser = localStorage.getItem("user")
-      if (storedUser) {
-        try {
-          const parsed = JSON.parse(storedUser)
-          if (parsed?.raisonSociale) {
-            setClientName(parsed.raisonSociale)
-          }
-        } catch (error) {
-          console.warn("Impossible de parser l'utilisateur en localStorage", error)
-        }
-      }
-    }
-  }, [])
+  // Nom d'utilisateur fixe pour le développement, en attendant le backend
 
   useEffect(() => {
     const onClickOutside = (event: MouseEvent) => {
@@ -62,25 +50,30 @@ export function DashboardHeader() {
 
   return (
     <header className="fixed top-0 inset-x-0 z-50 bg-linear-to-r from-[#af3338] to-[#c9454a] text-white shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[80vw] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-6">
-          <div className="flex justify-start items-start gap-5">
+          <div className="flex justify-start items-center gap-5">
             {last !== "platform" && <Button 
               onClick={()=>router.back()}
               className="bg-white/10 px-3 py-1.5 text-sm font-medium text-white hover:bg-white/20 transition-colors"
             >
                 <ArrowLeft/>
             </Button>}
+            <Image
+              src="/logo_arpce.png"
+              alt="Logo ARPCE"
+              width={70}
+              height={70}
+              className="object-contain rounded-xl"
+              priority
+            />
             <div>
-              <h1 className="text-3xl font-bold flex flex-wrap items-center gap-2">
-                {last && translateRessource(last)
-  }
-                {last == "platform" && clientName && (
-                  <span className="text-lg font-medium text-white/80 leading-none">
-                    • {clientName}
-                  </span>
-                )}
+              <h1 className="text-3xl font-bold items-center gap-2">
+                {last && translateRessource(last)}
               </h1>
+              <span className="text-lg font-medium text-white/80 leading-none">
+                {user?.contactNom}
+              </span>
             </div>
           </div>
           

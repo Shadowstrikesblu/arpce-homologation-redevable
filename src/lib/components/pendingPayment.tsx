@@ -19,7 +19,7 @@ export function PendingPaymentsTable({ payments, onProcessPayment }: PendingPaym
     <Card className="border border-gray-100 bg-white/90 shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between pb-4">
         <div>
-          <p className="text-sm font-semibold text-gray-900">Paiements en attente</p>
+          <p className="text-sm font-semibold text-gray-900">Facture en attente de paiement</p>
           <p className="text-xs text-gray-500">Suivez les échéances à traiter rapidement</p>
         </div>
         <span className="inline-flex items-center gap-2 rounded-full bg-[#af3338]/10 px-3 py-1 text-xs font-medium text-[#af3338]">

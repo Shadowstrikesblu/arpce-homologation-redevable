@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -19,99 +18,107 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
-import projetsMock from "@/lib/mock/dossier.mock";
 import { useRouter } from "next/navigation";
 import SystemLoader from "@/lib/components/loader";
 import { pathsUtils } from "@/lib/utils/path.util";
 import { Pagination } from "@/lib/components/pagination";
+import { dossiers, ListeDossiersParams, DossierListItem } from "@/lib/endpoints/dossiers";
+
 
 type SortOption = "date_desc" | "date_asc" | "numero_asc";
 
-
 const PageProjets = () => {
-  
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [sortOption, setSortOption] = useState<SortOption>("date_desc");
-  const router = useRouter()
+  const [dossiersData, setDossiersData] = useState<DossierListItem[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const router = useRouter();
   const itemsPerPage = 10;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Simulation d'appel API
-        await new Promise((resolve) => setTimeout(resolve, 800));
-        setError(null);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Erreur lors du chargement des dossiers"
-        );
-        console.error("Erreur:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Fonction pour charger les dossiers
+  const fetchDossiers = async (page: number, recherche?: string, trierPar?: string, ordre?: string) => {
+    try {
+      setLoading(true);
+      setError(null);
 
-    fetchData();
-  }, []);
+      const params: ListeDossiersParams = {
+        Page: page,
+        TaillePage: itemsPerPage,
+        Recherche: recherche || undefined,
+        TrierPar: trierPar,
+        Ordre: ordre,
+      };
 
-  // Réinitialiser la page quand on change le filtre / tri
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [search, sortOption]);
-
-  const filteredAndSortedProjets = useMemo(() => {
-    const lower = search.toLowerCase().trim();
-
-    const filtered = projetsMock.filter((p) => {
-      if (!lower) return true;
-
-      const equipement = p.demandes?.[0]?.equipement ?? "";
-      return (
-        p.numero.toLowerCase().includes(lower) ||
-        p.libelle.toLowerCase().includes(lower) ||
-        equipement.toLowerCase().includes(lower)
+      const response = await dossiers.liste(params);
+      
+      setDossiersData(response.dossiers);
+      setTotalPages(response.totalPage);
+      setTotalItems(response.dossiers.length); 
+      
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Erreur lors du chargement des dossiers"
       );
-    });
+      console.error("Erreur:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const sorted = [...filtered].sort((a, b) => {
-      if (sortOption === "date_desc" || sortOption === "date_asc") {
-        const da = new Date(a.dateOuverture).getTime();
-        const db = new Date(b.dateOuverture).getTime();
-        return sortOption === "date_desc" ? db - da : da - db;
-      }
+  useEffect(() => {
+    const trierPar = getTrierPar(sortOption);
+    const ordre = getOrdre(sortOption);
+    
+    fetchDossiers(currentPage, search, trierPar, ordre);
+  }, [currentPage, search, sortOption]);
 
-      // numero_asc
-      return a.numero.localeCompare(b.numero, "fr");
-    });
+  const getTrierPar = (sortOption: SortOption): string => {
+    switch (sortOption) {
+      case "date_desc":
+      case "date_asc":
+        return "DateOuverture";
+      case "numero_asc":
+        return "Numero";
+      default:
+        return "DateOuverture";
+    }
+  };
 
-    return sorted;
-  }, [search, sortOption]);
+  const getOrdre = (sortOption: SortOption): string => {
+    switch (sortOption) {
+      case "date_desc":
+        return "desc";
+      case "date_asc":
+        return "asc";
+      case "numero_asc":
+        return "asc";
+      default:
+        return "desc";
+    }
+  };
 
-  const totalPages = Math.ceil(filteredAndSortedProjets.length / itemsPerPage) || 1;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProjets = filteredAndSortedProjets.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setCurrentPage(1);
+    }, 500);
 
-  if (loading) {
-    return <SystemLoader/>
-  }
+    return () => clearTimeout(timeoutId);
+  }, [search]);
 
-  if (error) {
+  const indexOfFirstItem = (currentPage - 1) * itemsPerPage + 1;
+  const indexOfLastItem = Math.min(currentPage * itemsPerPage, totalItems);
 
+  if (loading && dossiersData.length === 0) {
+    return <SystemLoader />;
   }
 
   return (
     <div className="space-y-8">
-
       <div className="max-w-7xl mx-auto px-4 space-y-8">
-
-        {/* Barre de filtres : recherche + tri */}
         <Card className="p-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="flex-1 w-full">
             <label className="text-sm font-medium text-gray-700 mb-1 block">
@@ -136,16 +143,21 @@ const PageProjets = () => {
                 <SelectValue placeholder="Sélectionner un tri" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="date_desc">Date d&apos;ouverture (plus récent)</SelectItem>
-                <SelectItem value="date_asc">Date d&apos;ouverture (plus ancien)</SelectItem>
+                <SelectItem value="date_desc">Date d'ouverture (plus récent)</SelectItem>
+                <SelectItem value="date_asc">Date d'ouverture (plus ancien)</SelectItem>
                 <SelectItem value="numero_asc">Numéro de dossier (A → Z)</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </Card>
 
-        {/* Table des dossiers */}
         <Card className="mt-4 p-5">
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+          )}
+
           <div className="overflow-x-auto">
             <Table>
               <TableHeader className="bg-secondary">
@@ -163,53 +175,66 @@ const PageProjets = () => {
                     Statut
                   </TableHead>
                   <TableHead className="text-white uppercase text-xs font-semibold">
-                    Quantité
+                    Équipement
                   </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {currentProjets.length === 0 && (
+                {dossiersData.length === 0 && !loading && (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-6 text-sm text-gray-500">
-                      Aucun dossier ne correspond à votre recherche.
+                    <TableCell colSpan={5} className="text-center py-6 text-sm text-gray-500">
+                      {search ? "Aucun dossier ne correspond à votre recherche." : "Aucun dossier trouvé."}
                     </TableCell>
                   </TableRow>
                 )}
 
-                {currentProjets.map((projet) => (
+                {dossiersData.map((dossier) => (
                   <TableRow
-                    key={projet.id}
+                    key={dossier.id}
                     className="cursor-pointer hover:bg-gray-50"
-                    onClick={() => router.push(pathsUtils.projects + projet.id)}
+                    onClick={() => router.push(pathsUtils.projects + dossier.id)}
                   >
                     <TableCell className="font-semibold text-[#af3338]">
-                      {projet.numero}
+                      {dossier.numero}
                     </TableCell>
                     <TableCell className="font-medium text-gray-800">
-                      {projet.libelle}
+                      {dossier.libelle}
                     </TableCell>
                     <TableCell className="text-gray-600 whitespace-nowrap">
-                      {new Date(projet.dateOuverture).toLocaleDateString("fr-FR")}
+                      {new Date(dossier.dateOuverture).toLocaleDateString("fr-FR")}
                     </TableCell>
                     <TableCell className="whitespace-nowrap">
                       <span
                         className={[
                           "inline-flex px-3 py-1 text-xs font-medium rounded-full border",
-                          projet.statut?.code === "VALIDE"
+                          dossier.statut?.code === "VALIDE" || dossier.statut?.libelle?.toUpperCase().includes("VALIDE")
                             ? "bg-green-100 text-green-800 border-green-200"
-                            : projet.statut?.code === "REJETE"
+                            : dossier.statut?.code === "REJETE" || dossier.statut?.libelle?.toUpperCase().includes("REJETE")
                             ? "bg-red-100 text-red-800 border-red-200"
                             : "bg-blue-100 text-blue-800 border-blue-200",
                         ].join(" ")}
                       >
-                        {projet.statut?.libelle}
+                        {dossier.statut?.libelle}
                       </span>
                     </TableCell>
+                    <TableCell className="text-gray-600">
+                    {/* en attendant de savoir ce que je dois y mettre*/}
+                      -
                     <TableCell className="font-semibold text-[#8ba755] whitespace-nowrap">
                       {projet.demandes?.[0]?.quantiteEquipements}
                     </TableCell>
                   </TableRow>
                 ))}
+
+                {loading && dossiersData.length > 0 && (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center py-4">
+                      <div className="flex justify-center">
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#af3338]"></div>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </div>
@@ -219,17 +244,15 @@ const PageProjets = () => {
               <p className="text-xs text-gray-500">
                 Affichage de{" "}
                 <span className="font-medium">
-                  {filteredAndSortedProjets.length === 0
-                    ? 0
-                    : indexOfFirstItem + 1}
+                  {dossiersData.length === 0 ? 0 : indexOfFirstItem}
                 </span>{" "}
                 à{" "}
                 <span className="font-medium">
-                  {Math.min(indexOfLastItem, filteredAndSortedProjets.length)}
+                  {indexOfLastItem}
                 </span>{" "}
                 sur{" "}
                 <span className="font-medium">
-                  {filteredAndSortedProjets.length}
+                  {totalItems}
                 </span>{" "}
                 dossier(s)
               </p>

@@ -15,14 +15,15 @@ export function FileUploader({
   maxSizeMb,
   className,
   title,
-  type
+  type,
+  file
 }: FileUploaderProps) {
 
   const inputRef = React.useRef<HTMLInputElement | null>(null)
   const [isDragging, setIsDragging] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
-  const [fileCount, setFileCount] = React.useState(0)
-  const [lastFileName, setLastFileName] = React.useState<string | null>(null)
+  const [fileCount, setFileCount] = React.useState(file ? 1 : 0)
+  const [lastFileName, setLastFileName] = React.useState<string | null>(file?.name ?? null)
   const { setHelp } = useHelp()
 
 

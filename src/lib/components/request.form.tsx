@@ -1,91 +1,124 @@
+// components/EquipementForm.tsx
 "use client"
 
 import * as React from "react"
 import { useForm } from "react-hook-form"
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Button } from "@/components/ui/button"
-import {  Demande, DocumentDemande, TypeNombre } from "../interfaces/models.interface"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { FileUploader } from "./upload"
-import { DemandeFormProps } from "../interfaces/requestComponentProps.interface"
-import { fileToDocumentDemande } from "../utils/form.create.utils"
+import { Textarea } from "@/components/ui/textarea"
+import { FileUploader } from "@/lib/components/upload"
+import { Button } from "@/components/ui/button"
+import { extendDemande } from "../types/extendedDossier.type"
 import { HelpButton } from "./help-button"
-import { useHelp } from "@/context/helpContext"
+import { Trash, Trash2 } from "lucide-react"
+import { validateExtendDemande } from "../utils/checkEquipement"
+import { useToast } from "@/context/toastModal"
+import { useAlert } from "../hooks/useAlert"
+import { ErrorText } from "../ressources/error.ressource"
 
+type EquipementFormProps = {
+  label: string
+  initialValue?: Partial<extendDemande>
+  onChange: (value: extendDemande) => void
+  onDelete : ()=>void 
+}
 
-
-export function RequestComponent({
-  initialValue,
+export const EquipementForm: React.FC<EquipementFormProps> = ({
   label,
-  onSubmitDemande
-}: DemandeFormProps) {
-
-  const form = useForm<Demande>({
-    defaultValues: initialValue,
+  initialValue,
+  onChange,
+  onDelete
+}) => {
+  const form = useForm<extendDemande>({
+    defaultValues: {
+      equipement: initialValue?.equipement ?? "",
+      modele: initialValue?.modele ?? "",
+      marque: initialValue?.marque ?? "",
+      fabricant: initialValue?.fabricant ?? "",
+      type: initialValue?.type ?? "",
+      description: initialValue?.description ?? "",
+      quantiteEquipements: initialValue?.quantiteEquipements ?? "",
+      fiche_technique:
+        (initialValue?.fiche_technique as File) ?? (null as unknown as File),
+    },
   })
 
+  React.useEffect(() => {
+    form.reset({
+      equipement: initialValue?.equipement ?? "",
+      modele: initialValue?.modele ?? "",
+      marque: initialValue?.marque ?? "",
+      fabricant: initialValue?.fabricant ?? "",
+      type: initialValue?.type ?? "",
+      description: initialValue?.description ?? "",
+      quantiteEquipements: initialValue?.quantiteEquipements ?? "",
+      fiche_technique:
+        (initialValue?.fiche_technique as File) ?? (null as unknown as File),
+    })
+  }, [initialValue, form])
 
-  const [documentsFicheTechnique, setDocumentsFicheTechnique] = React.useState<DocumentDemande[]>([])
+  const alert = useAlert()
+  const toast = useToast()
 
-  // State final pour voir la Demande complète (typée Demande)
-  const [demandeSoumise, setDemandeSoumise] = React.useState<Demande | null>(null)
-  const { setHelp } = useHelp()
+  const onSubmit = (values: extendDemande) => {
 
-  const handleUploadFicheTechnique = (files: File[]) => {
-    const docs = files.map((f) => fileToDocumentDemande(f, "Fiche technique"))
-    setDocumentsFicheTechnique((prev) => [...prev, ...docs])
-  }
+    const {valid, errors} = validateExtendDemande(values)
 
+    if(!valid){
 
+      const messages = Object.values(errors)
+        .map((msg) => `• ${msg}`)
+        .join("\n")          // chaque erreur sur une nouvelle ligne
 
-  // ------------------------------------
-  // SUBMIT
-  // ------------------------------------
-  const onSubmit = (values: Demande) => {
-
-    
-
-    const tousLesDocs: DocumentDemande[] = [...documentsFicheTechnique]
-
-    const demandeComplete: Demande = {
-      ...values,
-      documentsDemandes: tousLesDocs,
+      alert.error("Erreur", messages)
+      return;
     }
+      
+    onChange(values)
 
-    // State typé Demande
-    setDemandeSoumise(demandeComplete)
+    toast.success(ErrorText.dossier_form.ep_added.title)
 
-    onSubmitDemande(demandeComplete)
-
+    return;
   }
 
-  // ------------------------------------
-  // RENDER
-  // ------------------------------------
+  const handleFicheUpload = (files: File[]) => {
+    const file = files[0]
+    if (!file) return
+    form.setValue("fiche_technique", file)
+    const values = form.getValues()
+    onChange({
+      ...values,
+      fiche_technique: file,
+    })
+  }
+
   return (
-
-    
-
-    <div className="mx-auto space-y-8">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold tracking-tight">
-          {label}
-        </h1>
-
-        <HelpButton onClick={()=>setHelp("equipement")}/>
-
+    <div className="mx-auto space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-semibold tracking-tight">{label}</h2>
+        <div>
+          <HelpButton/>
+          <Button onClick={onDelete} variant={'ghost'}><Trash2/></Button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        {/* FORMULAIRE SHADCN */}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-1">
+        {/* Formulaire texte */}
         <div className="col-span-1">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
               className="space-y-6 rounded-lg border bg-card p-6"
             >
-              {/* Ligne 1 : Equipement / Modèle */}
+              {/* Ligne 1 : Équipement / Modèle */}
               <div className="grid gap-4 md:grid-cols-2">
                 <FormField
                   control={form.control}
@@ -163,7 +196,7 @@ export function RequestComponent({
                 />
               </div>
 
-              {/* Ligne 3 : Type / Catégorie */}
+              {/* Ligne 3 : Type / Quantité */}
               <div className="grid gap-4 md:grid-cols-2">
                 <FormField
                   control={form.control}
@@ -187,59 +220,12 @@ export function RequestComponent({
                   control={form.control}
                   name="quantiteEquipements"
                   render={({ field }) => (
-                    <FormItem className="max-w-xs">
+                    <FormItem>
                       <FormLabel>Quantité</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
                           min={1}
-                          value={field.value ?? ""}
-                          onChange={(e) =>
-                            field.onChange(
-                              e.target.value
-                                ? (Number(e.target.value) as unknown as TypeNombre)
-                                : (undefined as unknown as TypeNombre)
-                            )
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-
-              {/* Contact */}
-              <div className="grid gap-4 md:grid-cols-2">
-                <FormField
-                  control={form.control}
-                  name="contactNom"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Contact (nom complet)</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Nom du responsable"
-                          {...field}
-                          value={field.value ?? ""}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="contactEmail"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Contact (email)</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="email"
-                          placeholder="email@exemple.com"
                           {...field}
                           value={field.value ?? ""}
                         />
@@ -250,31 +236,49 @@ export function RequestComponent({
                 />
               </div>
 
+              {/* Description */}
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Description détaillée de l'équipement..."
+                        {...field}
+                        value={field.value ?? ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="space-y-2">
+                <h3 className="text-lg font-medium">Fiche technique</h3>
+                <p className="text-sm text-muted-foreground">
+                  Ajoutez la fiche technique détaillée de l&apos;équipement à homologuer (PDF, 3&nbsp;Mo max).
+                </p>
+                <FileUploader
+                  title="Fiche technique"
+                  accept=".pdf"
+                  maxSizeMb={3}
+                  multiple={false}
+                  onFiles={handleFicheUpload}
+                  type="fiche_technique"
+                  file={initialValue?.fiche_technique}
+                />
+              </div>
+
+              <Button type="submit" className="w-full">
+                Enregistrer l&apos;équipement
+              </Button>
             </form>
           </Form>
         </div>
-
-        {/* Zone d’upload Fiche technique */}
-        <div className="space-y-2">
-          <h2 className="text-lg font-medium">Fiche technique</h2>
-          <p className="text-sm text-muted-foreground">
-            Ajoutez la fiche technique détaillée de l&apos;équipement à homologuer (PDF, 3&nbsp;Mo max).
-          </p>
-          <FileUploader
-            title="Fiche technique"
-            accept=".pdf"
-            maxSizeMb={3}
-            multiple
-            onFiles={handleUploadFicheTechnique}
-            type="fiche_technique"
-          />
-              <Button type="submit"> Enregistrer demande</Button>
-
-        </div>
-
         
       </div>
     </div>
-    
   )
 }
