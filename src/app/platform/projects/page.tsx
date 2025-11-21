@@ -221,6 +221,10 @@ const PageProjets = () => {
                     {/* en attendant de savoir ce que je dois y mettre*/}
                       -
                     </TableCell>
+
+                    <TableCell className="font-semibold text-[#8ba755] whitespace-nowrap">
+                      {0}
+                    </TableCell>
                   </TableRow>
                 ))}
 
