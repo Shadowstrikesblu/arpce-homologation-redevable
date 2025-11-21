@@ -222,7 +222,7 @@ const PageProjets = () => {
                     </TableCell>
 
                     <TableCell className="font-semibold text-[#8ba755] whitespace-nowrap">
-                      {projet.demandes?.[0]?.quantiteEquipements}
+                      {0}
                     </TableCell>
 
                     <TableCell className="font-semibold text-[#8ba755] whitespace-nowrap">
