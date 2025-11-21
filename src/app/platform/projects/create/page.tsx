@@ -1,16 +1,20 @@
 "use client"
 
 import * as React from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { Input } from "@/components/ui/input"
 import { Demande, DocumentDemande } from "@/lib/interfaces/models.interface"
 import { createEmptyDemande, fileToDocumentDemande } from "@/lib/utils/form.create.utils"
-import { RequestComponent } from "@/lib/components/request.form"
+import { RequestComponent, RequestComponentRef } from "@/lib/components/request.form"
 import { FileUploader } from "@/lib/components/upload"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { TypeLibelle } from "@/types/types"
-import { Plus } from "lucide-react"
+import { Plus, Loader2 } from "lucide-react"
 import { useAlert } from "@/lib/hooks/useAlert"
+import { dossiers } from "@/lib/endpoints/dossiers"
+import { pathsUtils } from "@/lib/utils/path.util"
 
 // Type pour le formulaire du dossier
 type DossierFormData = {
@@ -18,17 +22,17 @@ type DossierFormData = {
 }
 
 export default function MultiDemandesScreen() {
-
+  const router = useRouter()
   const [demandes, setDemandes] = React.useState<Demande[]>([
     createEmptyDemande(),
   ])
   
   const [activeIndex, setActiveIndex] = React.useState(0)
-  const [documentsLetter, setDocumentsLetter] = React.useState<DocumentDemande[]>([])
+  const [documentsLetter, setDocumentsLetter] = React.useState<File[]>([])
+  const [libelle, setLibelle] = React.useState<string>("")
+  const [loading, setLoading] = React.useState(false)
+  const formRef = React.useRef<RequestComponentRef>(null)
   const alert = useAlert()
-
-  // Formulaire pour gérer le libellé du dossier
-  const [libelle, setLibelle] = React.useState<TypeLibelle>()
 
   const handleSubmitDemande = (index: number, demande: Demande) => {
     setDemandes((prev) =>
@@ -37,9 +41,9 @@ export default function MultiDemandesScreen() {
   }
 
   const handleUploadLetter = (files: File[]) => {
+    setDocumentsLetter(files)
+    
     const docs = files.map((f) => fileToDocumentDemande(f, "Courrier d'homologation"))
-    setDocumentsLetter(docs)
-
     setDemandes((prev) =>
         ([...prev.map((demande) => ({
         ...demande,
@@ -48,19 +52,32 @@ export default function MultiDemandesScreen() {
     )
   }
 
-  const checkFormData = (idx : number)=>{
+  const checkFormData = (idx: number) => {
+    return checkFormDataWithDemande(idx, demandes[idx])
+  }
 
-    if( !demandes[idx]?.contactEmail)         return false
-    if( !demandes[idx]?.contactNom)           return false
-    if( !demandes[idx]?.type)                 return false
-    if( !demandes[idx]?.quantiteEquipements)  return false
-    if( !demandes[idx]?.marque)               return false
-    if( !demandes[idx]?.modele)               return false
-    if( !demandes[idx]?.fabricant)            return false
-    if( !demandes[idx]?.fabricant)            return false
-    if( !demandes[idx]?.equipement)           return false
+  const checkFormDataWithDemande = (idx: number, demande: Demande | undefined) => {
+    if (!demande) return false
 
-    return true 
+    const contactEmail = String(demande.contactEmail || "").trim()
+    const contactNom = String(demande.contactNom || "").trim()
+    const type = String(demande.type || "").trim()
+    const quantiteEquipements = demande.quantiteEquipements
+    const marque = String(demande.marque || "").trim()
+    const modele = String(demande.modele || "").trim()
+    const fabricant = String(demande.fabricant || "").trim()
+    const equipement = String(demande.equipement || "").trim()
+
+    if (!contactEmail) return false
+    if (!contactNom) return false
+    if (!type) return false
+    if (!quantiteEquipements || quantiteEquipements <= 0) return false
+    if (!marque) return false
+    if (!modele) return false
+    if (!fabricant) return false
+    if (!equipement) return false
+
+    return true
   }
 
   const handleAddDemande = () => {
@@ -91,6 +108,90 @@ export default function MultiDemandesScreen() {
 
 
 
+  const handleCreerDossier = async () => {
+    if (!libelle.trim()) {
+      alert.error("Erreur", "Veuillez saisir un libellé pour le dossier.")
+      return
+    }
+
+    if (documentsLetter.length === 0) {
+      alert.error("Erreur", "Veuillez télécharger le courrier d'homologation.")
+      return
+    }
+
+    const demandesAvecValeursActuelles = [...demandes]
+    
+    if (formRef.current) {
+      const valeursActuelles = formRef.current.getCurrentValues()
+      if (valeursActuelles) {
+        demandesAvecValeursActuelles[activeIndex] = valeursActuelles
+      }
+    }
+
+    const demandesValides = demandesAvecValeursActuelles.filter((d, index) => {
+      const demande = demandesAvecValeursActuelles[index]
+      return checkFormDataWithDemande(index, demande)
+    })
+    
+    if (demandesValides.length === 0) {
+      alert.error("Erreur", "Veuillez remplir au moins un équipement complet.")
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      const courrierFile = documentsLetter[0]
+      if (!courrierFile) {
+        alert.error("Erreur", "Veuillez télécharger le courrier d'homologation.")
+        setLoading(false)
+        return
+      }
+
+      const response = await dossiers.creer({
+        Libelle: libelle,
+        CourrierFile: courrierFile,
+      })
+
+      const dossierId = response.dossierId
+
+      for (const demande of demandesValides) {
+        const ficheTechniqueDoc = demande.documentsDemandes?.find(
+          (doc) => doc.nom?.includes("Fiche technique")
+        )
+        
+        const ficheTechniqueFile = ficheTechniqueDoc?.donnees 
+          ? (ficheTechniqueDoc.donnees as unknown as File)
+          : undefined
+
+        await dossiers.ajouterEquipement(dossierId, {
+          IdDossier: dossierId,
+          Equipement: String(demande.equipement || ""),
+          Modele: demande.modele ? String(demande.modele) : undefined,
+          Marque: demande.marque ? String(demande.marque) : undefined,
+          Fabricant: demande.fabricant ? String(demande.fabricant) : undefined,
+          Description: demande.description ? String(demande.description) : undefined,
+          QuantiteEquipements: demande.quantiteEquipements ? Number(demande.quantiteEquipements) : undefined,
+          ContactNom: demande.contactNom ? String(demande.contactNom) : undefined,
+          ContactEmail: demande.contactEmail ? String(demande.contactEmail) : undefined,
+          TypeURL_FicheTechnique: ficheTechniqueFile,
+        })
+      }
+
+      alert.success(
+        "Succès",
+        "Votre dossier a été créé avec succès."
+      )
+
+      router.push(`${pathsUtils.projects}${dossierId}`)
+    } catch (err: any) {
+      const errorMessage = err?.response?.data?.message || err?.message || "Erreur lors de la création du dossier."
+      alert.error("Erreur", errorMessage)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const activeDemande = demandes[activeIndex]
 
   return (
@@ -105,7 +206,20 @@ export default function MultiDemandesScreen() {
               Initiez votre dossier de certification
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="libelle" className="text-sm font-medium text-gray-700">
+                Libellé du dossier *
+              </label>
+              <Input
+                id="libelle"
+                placeholder="Ex: Homologation équipement réseau"
+                value={libelle}
+                onChange={(e) => setLibelle(e.target.value)}
+                required
+                disabled={loading}
+              />
+            </div>
             <FileUploader
               title="Courrier d'homologation"
               accept=".pdf"
@@ -145,6 +259,7 @@ export default function MultiDemandesScreen() {
         {activeDemande && (
           <div>
             <RequestComponent
+              ref={formRef}
               key={activeIndex} 
               initialValue={activeDemande}
               label={`Equipement ${activeIndex + 1}`}
@@ -156,10 +271,20 @@ export default function MultiDemandesScreen() {
         )}
       </div>
       
-      <Button className="w-full bg-secondary" onClick={()=>    alert.success(
-      "Succès",
-      "Votre dossier a été enregistré avec succès."
-    )}> Enregistrer le Dossier</Button>
+      <Button 
+        className="w-full bg-secondary" 
+        onClick={handleCreerDossier}
+        disabled={loading}
+      >
+        {loading ? (
+          <>
+            <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+            Création en cours...
+          </>
+        ) : (
+          "Enregistrer le Dossier"
+        )}
+      </Button>
       
     </div>
   )

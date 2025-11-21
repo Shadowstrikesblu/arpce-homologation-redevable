@@ -26,11 +26,11 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useRouter } from "next/navigation";
-import { use, useMemo } from "react";
-import projetsMock from "@/lib/mock/dossier.mock";
-import { Download, FileText, CreditCard } from "lucide-react";
+import { use, useEffect, useState } from "react";
+import { Download, FileText, CreditCard, Loader2 } from "lucide-react";
 import { PaymentCard } from "@/lib/components/payment/paymentCard";
 import { pathsUtils } from "@/lib/utils/path.util";
+import { dossiers, DossierDetail } from "@/lib/endpoints/dossiers";
 
 const formatDate = (value?: string | null) => {
   if (!value) return "-";
@@ -67,13 +67,55 @@ const DossierDetails = ({params} : Props ) => {
   
   const router = useRouter()
   const { id } = use(params)
+  const [dossier, setDossier] = useState<DossierDetail | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const dossier = useMemo(
-    () => projetsMock.find((prev) => prev.id === Number(id)),
-    [params]
-  );
+  useEffect(() => {
+    const fetchDossier = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        const data = await dossiers.detail(id)
+        setDossier(data)
+      } catch (err: any) {
+        const errorMessage = err?.response?.data?.message || err?.message || "Erreur lors du chargement du dossier."
+        setError(errorMessage)
+      } finally {
+        setLoading(false)
+      }
+    }
 
-  if(!dossier) return;
+    if (id) {
+      fetchDossier()
+    }
+  }, [id])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+          <p className="text-gray-600">Chargement du dossier...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error || !dossier) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-6xl mx-auto px-4">
+          <Alert className="border-red-200 bg-red-50">
+            <AlertTitle>Erreur</AlertTitle>
+            <AlertDescription>
+              {error || "Dossier introuvable"}
+            </AlertDescription>
+          </Alert>
+        </div>
+      </div>
+    )
+  }
 
   const statutCode = dossier.statut?.code;
   const statutLibelle = dossier.statut?.libelle ?? "Statut inconnu";
@@ -207,12 +249,14 @@ const DossierDetails = ({params} : Props ) => {
                     {formatDate(premiereAttestation.dateExpiration)}
                   </p>
                 </div>
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-gray-500">Format</p>
-                  <p className="text-lg font-semibold uppercase">
-                    {premiereAttestation.extension}
-                  </p>
-                </div>
+                {(premiereAttestation as any).extension && (
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-gray-500">Format</p>
+                    <p className="text-lg font-semibold uppercase">
+                      {(premiereAttestation as any).extension}
+                    </p>
+                  </div>
+                )}
               </div>
               <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <p className="text-sm text-blue-800">
@@ -360,51 +404,53 @@ const DossierDetails = ({params} : Props ) => {
                         </p>
                       </div>
                       <div className="text-right text-xs text-gray-500">
-                        <p>
-                          Quantité :{" "}
-                          <span className="font-semibold text-gray-800">
-                            {demande.quantiteEquipements ?? "-"}
-                          </span>
-                        </p>
-                        {demande.contactNom && (
-                          <p className="mt-1">
-                            Contact :{" "}
-                            <span className="font-medium">
-                              {demande.contactNom}
+                        {(demande as any).quantiteEquipements && (
+                          <p>
+                            Quantité :{" "}
+                            <span className="font-semibold text-gray-800">
+                              {(demande as any).quantiteEquipements}
                             </span>
                           </p>
                         )}
-                        {demande.contactEmail && (
+                        {(demande as any).contactNom && (
+                          <p className="mt-1">
+                            Contact :{" "}
+                            <span className="font-medium">
+                              {(demande as any).contactNom}
+                            </span>
+                          </p>
+                        )}
+                        {(demande as any).contactEmail && (
                           <p className="mt-0.5">
                             <span className="font-mono">
-                              {demande.contactEmail}
+                              {(demande as any).contactEmail}
                             </span>
                           </p>
                         )}
                       </div>
                     </div>
 
-                    {demande.description && (
+                    {(demande as any).description && (
                       <>
                         <Separator />
                         <div className="text-xs text-gray-600">
                           <span className="font-semibold">
                             Description :
                           </span>{" "}
-                          {demande.description}
+                          {(demande as any).description}
                         </div>
                       </>
                     )}
 
                     {/* Affichage conditionnel ANNULEE : Motif */}
-                    {isAnnulee && demande.motifRejet && (
+                    {isAnnulee && (demande as any).motifRejet && (
                       <>
                         <Separator />
                         <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-800">
                           <span className="font-semibold">
                             Motif d'annulation :
                           </span>{" "}
-                          {demande.motifRejet.libelle ?? demande.motifRejet.toString()}
+                          {(demande as any).motifRejet?.libelle ?? String((demande as any).motifRejet)}
                         </div>
                       </>
                     )}
@@ -442,7 +488,7 @@ const DossierDetails = ({params} : Props ) => {
                             {attestation.id}
                           </TableCell>
                           <TableCell className="text-xs">
-                            Demande #{attestation.idDemande}
+                            {(attestation as any).idDemande ? `Demande #${(attestation as any).idDemande}` : "-"}
                           </TableCell>
                           <TableCell className="text-xs">
                             {formatDate(attestation.dateDelivrance)}
@@ -451,7 +497,7 @@ const DossierDetails = ({params} : Props ) => {
                             {formatDate(attestation.dateExpiration)}
                           </TableCell>
                           <TableCell className="text-xs">
-                            {attestation.extension}
+                            {(attestation as any).extension || "-"}
                           </TableCell>
                           <TableCell className="text-xs text-right">
                             <Button size="sm" variant="outline">
