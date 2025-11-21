@@ -20,7 +20,7 @@ export const dashboardStats = {
   },
 
   // Paiements en attente d’un dossier
-  getPendingPayments: async (dossierId: string): Promise<PendingPayment> => {
+  getPendingPayments: async (dossierId: string): Promise<PendingPayment[]> => {
     const { data } = await axiosClient.get(
       `/api/dossiers/${dossierId}/paiement-en-attente`
     ); // singulier

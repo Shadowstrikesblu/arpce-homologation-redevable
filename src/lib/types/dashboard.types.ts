@@ -23,3 +23,13 @@ export interface PendingPayment {
   dateEcheance: string;
   modeReglement: string;
 }
+
+
+export interface PendingBill {
+  id: TypeCle;
+  numeroDossier: string;
+  montant: number;
+  EquipementFacturation: [];
+  dateCreation: string;
+
+}

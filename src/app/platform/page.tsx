@@ -10,6 +10,10 @@ import { RecentDemandsTable } from '@/lib/components/recentRequest'
 import { QuickActions, SupportAndHelpSection } from '@/lib/components/quickAction'
 import { pathsUtils } from '@/lib/utils/path.util'
 import { dashboardStats } from '@/lib/endpoints/dashboard'
+import SystemLoader from '@/lib/components/loader'
+import { useToast } from '@/context/toastModal'
+import { ErrorText } from '@/lib/ressources/error.ressource'
+import { PendingBillsTable } from '@/lib/components/pendingBills'
 
 
 
@@ -17,10 +21,17 @@ export default function DashboardPage() {
   const router = useRouter()
 
 // STATES
-const [stats, setStats] = useState<DashboardStats | null>(null)
+const [stats, setStats] = useState<DashboardStats | null>({
+  total: 0,
+  success: 0,
+  failed: 0,
+  inProgress: 0,
+  pendingPayments: 0
+})
 const [recentDemands, setRecentDemands] = useState<RecentDemand[]>([])
 const [pendingPayments, setPendingPayments] = useState<PendingPayment[]>([])
 const [loading, setLoading] = useState(true)
+const toast = useToast()
 
 // FETCH DES DONNÉES DU DASHBOARD
 useEffect(() => {
@@ -39,6 +50,8 @@ useEffect(() => {
 
     } catch (error) {
       console.error("Erreur Dashboard:", error)
+      toast.error(ErrorText.dashboard.error_loading.desc, ErrorText.dashboard.error_loading.title)
+
     } finally {
       setLoading(false)
     }
@@ -51,11 +64,7 @@ useEffect(() => {
 
   // 📌 LOADING UI (optionnel)
   if (loading || !stats) {
-    return (
-      <div className="p-5 text-center text-gray-500">
-        Chargement du tableau de bord...
-      </div>
-    )
+    return <SystemLoader/>
   }
 
 
@@ -100,11 +109,16 @@ useEffect(() => {
           onViewDetails={handleViewDemandDetails}
         />
 
+        <PendingBillsTable 
+          bills={[]} 
+          onLineClick={(id)=>{}} 
+        />
+
         {/* 🔹 PAIEMENTS EN ATTENTE */}
         <PendingPaymentsTable 
           payments={pendingPayments} 
           onProcessPayment={handleProcessPayment} 
-        />
+        />        
 
         <SupportAndHelpSection />
       </main>
