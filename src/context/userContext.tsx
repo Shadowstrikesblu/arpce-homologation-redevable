@@ -14,8 +14,14 @@ import { usePathname, useRouter } from "next/navigation";
 import { inherits } from "util";
 import { Client } from "@/lib/interfaces/models.interface";
 import SystemLoader from "@/lib/components/loader";
+import { auth } from "@/lib/endpoints/auth";
 
-export interface User extends Client {}
+export interface User {
+    userId : string;
+    email : string;
+    raisonSociale : string;
+    contactNom : string;
+}
 
 interface UserContextValue {
   user: User | null;
@@ -47,12 +53,18 @@ export function UserProvider({ children }: PropsWithChildren) {
         return;
     }
 
-
-    // if (!user) {
-    //     const next = encodeURIComponent(pathname || "/");
-    //     router.replace(`/auth/login?next=${next}`);
-    //     return;
-    // }
+    auth.token() 
+    .then((data)=>{
+        setUser({
+            ...data
+        })
+    }).catch((error)=>{
+        router.replace(`/auth/login?message=auth-failed`);
+    })
+    
+    // const next = encodeURIComponent(pathname || "/");
+    // router.replace(`/auth/login?next=${next}`);
+    // return;
 
     setIsCheckingAuth(false);
 

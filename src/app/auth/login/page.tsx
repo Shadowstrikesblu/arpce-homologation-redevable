@@ -79,7 +79,7 @@ export default function LoginPage() {
           <div className="text-center space-y-2">
             <div className="flex justify-center mb-4">
               <Image
-                src="/logo arpce.png"
+                src="/logo_arpce.png"
                 alt="Logo ARPCE"
                 width={120}
                 height={120}

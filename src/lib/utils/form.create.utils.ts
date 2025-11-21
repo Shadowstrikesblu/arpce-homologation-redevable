@@ -1,13 +1,8 @@
 // helpers/demande-empty.ts
 import { BinaryData, Demande, DocumentDemande, TypeCle, TypeCode, TypeLibelle, TypeNombre, TypeNoms, TypeNomsComplet, TypeRemarques } from "../interfaces/models.interface"
 
-export const createEmptyDemande = (): Demande => ({
+export const createEmptyDemande = () => ({
   id: undefined as unknown as TypeCle,
-  idDossier: undefined as unknown as TypeCle,
-  idCategorie: null,
-  idMotifRejet: null,
-  idProposition: null,
-  numeroDemande: null,
   equipement: "" as unknown as TypeLibelle,
   modele: "" as unknown as TypeLibelle,
   marque: "" as unknown as TypeLibelle,
@@ -15,10 +10,7 @@ export const createEmptyDemande = (): Demande => ({
   type: "" as unknown as TypeLibelle,
   description: "" as unknown as TypeRemarques,
   quantiteEquipements: undefined as unknown as TypeNombre,
-  contactNom: "" as unknown as TypeNomsComplet,
-  contactEmail: "" as unknown as string,
-  attestations: [],
-  documentsDemandes: [],
+
 })
 
 

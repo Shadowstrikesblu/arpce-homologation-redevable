@@ -168,14 +168,12 @@ export const dossiers = {
   creer: async (input: CreerDossierInput): Promise<CreerDossierResponse> => {
     const formData = new FormData();
     formData.append("Libelle", input.Libelle);
-    formData.append("CourrierFile", input.CourrierFile);
+    formData.append("CourrierFile", input.CourrierFile, input.CourrierFile.name);
 
-    const { data } = await axiosClient.post("/api/dossiers", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const { data } = await axiosClient.post("/api/dossiers", formData);
+
     return data;
+
   },
 
   
@@ -208,11 +206,7 @@ export const dossiers = {
       formData.append("TypeURL_FicheTechnique", input.TypeURL_FicheTechnique);
     }
 
-    const { data } = await axiosClient.post(`/api/dossiers/${dossierId}/equipements`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const { data } = await axiosClient.post(`/api/dossiers/${dossierId}/equipements`, formData);
     return data;
   },
 };

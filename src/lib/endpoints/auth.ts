@@ -25,8 +25,25 @@ export const auth = {
 
     register : async (input : RegisterInt)=>{
 
-        const {data} = await axiosClient.post("/api/auth/register", {...input})
+        const {data} = await axiosClient.post("/api/auth/register", input)
+
+        return data 
+    },
+
+
+
+    otp : async (code : number)=>{
+
+        const {data} = await axiosClient.post("/api/auth/confirm-account", {code})
+
+        return data 
+    },    
+    
+    token : async ()=>{
+
+        const {data} = await axiosClient.post("/api/auth/connect-by-token")
 
         return data 
     }
 }
+

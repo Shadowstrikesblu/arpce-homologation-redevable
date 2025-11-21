@@ -8,4 +8,5 @@ export interface FileUploaderProps{
   className?: string
   title : string
   type : HelpType
+  file ? : File
 }
