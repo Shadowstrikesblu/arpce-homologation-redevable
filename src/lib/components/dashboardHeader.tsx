@@ -10,6 +10,8 @@ import { logout } from "@/lib/services/user.service"
 import { getResourceFromPath, translateRessource } from "../utils/actifPath.utils"
 import { useUser } from "@/context/userContext"
 import Image from "next/image";
+import { useAlert } from "../hooks/useAlert"
+import { TextRessource } from "../ressources/alert.ressource"
 
 export function DashboardHeader() {
   const router = useRouter()
@@ -18,6 +20,7 @@ export function DashboardHeader() {
   const pathname = usePathname()
   const [last, setLast] = useState<string | null>(null)
   const [user] = useUser()
+  const alert = useAlert()
 
   useEffect(() => {
     const onClickOutside = (event: MouseEvent) => {
@@ -34,8 +37,19 @@ export function DashboardHeader() {
   }, [menuOpen])
 
   const handleLogout = async () => {
+
     setMenuOpen(false)
-    await logout()
+    alert.confirm(
+      TextRessource.header.logout.title, 
+      TextRessource.header.logout.desc,
+      ()=>{}, // onconfirm
+      ()=>{
+        localStorage.removeItem(process.env["NEXT_PUBLIC_LOCALSTORAGE_TOKEN_KEY"])
+      }, // onDeny
+      "warning",
+      "Rester",
+      "Se deconnecter",
+    )
   }
 
   useEffect(()=>{
