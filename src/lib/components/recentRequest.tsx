@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ArrowRight, Eye } from 'lucide-react'
 import { RecentDemand } from '../types/dashboard.types'
+import { HumanDate } from '../utils/date.util'
 
 interface RecentDemandsTableProps {
   demands: RecentDemand[]
@@ -56,14 +57,14 @@ export function RecentDemandsTable({ demands, onViewMore, onViewDetails }: Recen
                     statusStyles[demand.statut as keyof typeof statusStyles] ?? statusStyles['pending']!
                   return (
                     <tr key={demand.id} className="transition hover:bg-gray-50/70">
-                      <td className="px-4 py-3 font-medium text-gray-900">{demand.numeroDemande}</td>
-                      <td className="px-4 py-3 text-gray-700">{demand.equipement}</td>
+                      <td className="px-4 py-3 font-medium text-gray-900">{demand.numero}</td>
+                      <td className="px-4 py-3 text-gray-700">{demand.demandes.length}</td>
                       <td className="px-4 py-3">
                         <Badge className={status.className} variant="secondary">
                           {status.label}
                         </Badge>
                       </td>
-                      <td className="px-4 py-3 text-gray-600">{formatDate(demand.dateCreation)}</td>
+                      <td className="px-4 py-3 text-gray-600">{HumanDate.format(demand.dateOuverture)}</td>
                       <td className="px-4 py-3 text-right">
                         <Button
                           variant="ghost"

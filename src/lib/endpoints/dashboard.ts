@@ -15,6 +15,7 @@ export const dashboardStats = {
   // Dernières demandes
   getRecentDemand: async (): Promise<RecentDemand[]> => {
     const { data } = await axiosClient.get("/api/dossiers/recents");
+    console.log(data)
     // si l'API renvoie un objet unique, on le met dans un tableau
     return Array.isArray(data) ? data : [data];
   },

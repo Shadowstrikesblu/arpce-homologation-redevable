@@ -32,8 +32,8 @@ export const auth = {
 
 
 
-    otp : async (code : number)=>{
-
+    otp : async (code : string)=>{
+        console.log(code)
         const {data} = await axiosClient.post("/api/auth/confirm-account", {code})
 
         return data 

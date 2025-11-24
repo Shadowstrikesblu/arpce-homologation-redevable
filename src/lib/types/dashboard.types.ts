@@ -10,10 +10,11 @@ export interface DashboardStats {
 
 export interface RecentDemand {
   id: TypeCle;
-  numeroDemande: string;
-  equipement: string;
-  statut: 'success' | 'failed' | 'inProgress' | 'pending';
-  dateCreation: string;
+  numero: string;
+  demandes: string;
+  statut: any
+  dateOuverture: string;
+  
 }
 
 export interface PendingPayment {

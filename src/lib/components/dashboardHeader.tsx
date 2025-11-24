@@ -19,8 +19,6 @@ export function DashboardHeader() {
   const [last, setLast] = useState<string | null>(null)
   const [user] = useUser()
 
-  // Nom d'utilisateur fixe pour le développement, en attendant le backend
-
   useEffect(() => {
     const onClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
