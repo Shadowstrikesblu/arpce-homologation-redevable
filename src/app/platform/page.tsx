@@ -12,7 +12,7 @@ import { pathsUtils } from '@/lib/utils/path.util'
 import { dashboardStats } from '@/lib/endpoints/dashboard'
 import SystemLoader from '@/lib/components/loader'
 import { useToast } from '@/context/toastModal'
-import { ErrorText } from '@/lib/ressources/error.ressource'
+import { TextRessource } from '@/lib/ressources/alert.ressource'
 import { PendingBillsTable } from '@/lib/components/pendingBills'
 
 
@@ -39,18 +39,17 @@ useEffect(() => {
     try {
       const statsData = await dashboardStats.getStats()
       setStats(statsData)
-      console.log(statsData);
       
 
       const recent = await dashboardStats.getRecentDemand()
       setRecentDemands(recent || [])
 
-      const payments = await dashboardStats.getPendingPayments("1")
-      setPendingPayments(payments || [])
+      // const payments = await dashboardStats.getPendingPayments("1")
+      // setPendingPayments(payments || [])
 
     } catch (error) {
       console.error("Erreur Dashboard:", error)
-      toast.error(ErrorText.dashboard.error_loading.desc, ErrorText.dashboard.error_loading.title)
+      toast.error(TextRessource.dashboard.error_loading.desc, TextRessource.dashboard.error_loading.title)
 
     } finally {
       setLoading(false)

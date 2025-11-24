@@ -11,7 +11,9 @@ export default function OTPPage() {
   const [error, setError] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(30);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-    const router = useRouter()
+  const router = useRouter()
+
+
   useEffect(() => {
     if (countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
@@ -33,7 +35,7 @@ export default function OTPPage() {
         return;
       }
       console.log(otpValue)
-      await auth.otp(parseInt(otpValue))
+      await auth.otp(otpValue)
 
       router.push("/platform")
       
@@ -114,7 +116,7 @@ export default function OTPPage() {
               </label>
               <div className="flex justify-center space-x-3">
                 {otp.map((digit, index) => (
-                  <input
+                  <input 
                     key={index}
                     ref={(el) => (inputRefs.current[index] = el)}
                     type="text"

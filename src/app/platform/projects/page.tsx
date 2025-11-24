@@ -23,6 +23,7 @@ import SystemLoader from "@/lib/components/loader";
 import { pathsUtils } from "@/lib/utils/path.util";
 import { Pagination } from "@/lib/components/pagination";
 import { dossiers, ListeDossiersParams, DossierListItem } from "@/lib/endpoints/dossiers";
+import { HumanDate } from "@/lib/utils/date.util";
 
 
 type SortOption = "date_desc" | "date_asc" | "numero_asc";
@@ -42,6 +43,7 @@ const PageProjets = () => {
   // Fonction pour charger les dossiers
   const fetchDossiers = async (page: number, recherche?: string, trierPar?: string, ordre?: string) => {
     try {
+
       setLoading(true);
       setError(null);
 
@@ -54,7 +56,7 @@ const PageProjets = () => {
       };
 
       const response = await dossiers.liste(params);
-      
+    
       setDossiersData(response.dossiers);
       setTotalPages(response.totalPage);
       setTotalItems(response.dossiers.length); 
@@ -74,6 +76,7 @@ const PageProjets = () => {
     const ordre = getOrdre(sortOption);
     
     fetchDossiers(currentPage, search, trierPar, ordre);
+    
   }, [currentPage, search, sortOption]);
 
   const getTrierPar = (sortOption: SortOption): string => {
@@ -201,7 +204,7 @@ const PageProjets = () => {
                       {dossier.libelle}
                     </TableCell>
                     <TableCell className="text-gray-600 whitespace-nowrap">
-                      {new Date(dossier.dateOuverture).toLocaleDateString("fr-FR")}
+                      {HumanDate.format(dossier.dateOuverture)}
                     </TableCell>
                     <TableCell className="whitespace-nowrap">
                       <span
@@ -217,9 +220,9 @@ const PageProjets = () => {
                         {dossier.statut?.libelle}
                       </span>
                     </TableCell>
-                    <TableCell className="text-gray-600">
-                    {/* en attendant de savoir ce que je dois y mettre*/}
-                      -
+
+                    <TableCell className="font-semibold text-[#8ba755] whitespace-nowrap">
+                      {dossier.demandes.length}
                     </TableCell>
 
                     <TableCell className="font-semibold text-[#8ba755] whitespace-nowrap">

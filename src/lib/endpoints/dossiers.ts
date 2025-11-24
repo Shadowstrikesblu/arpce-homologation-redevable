@@ -48,7 +48,8 @@ export interface DossierListItem {
   dateOuverture: string;
   numero: string;
   libelle: string;
-  statut: Statut;
+  statut: any;
+  demandes : []
 }
 
 export interface ListeDossiersParams {
@@ -166,9 +167,11 @@ export const dossiers = {
   },
 
   creer: async (input: CreerDossierInput): Promise<CreerDossierResponse> => {
+    
     const formData = new FormData();
+
     formData.append("Libelle", input.Libelle);
-    formData.append("CourrierFile", input.CourrierFile, input.CourrierFile.name);
+    formData.append("CourrierFile", input.CourrierFile);
 
     const { data } = await axiosClient.post("/api/dossiers", formData);
 

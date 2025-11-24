@@ -60,26 +60,31 @@ export function UserProvider({ children }: PropsWithChildren) {
         })
     }).catch((error)=>{
         router.replace(`/auth/login?message=auth-failed`);
+        return;
     })
     
-    // const next = encodeURIComponent(pathname || "/");
-    // router.replace(`/auth/login?next=${next}`);
-    // return;
-
     setIsCheckingAuth(false);
 
     }, [router, pathname, user]);
 
 
-    if (isCheckingAuth) {
-        return <SystemLoader/>; 
-    }
+    if (!user && isCheckingAuth) {
 
-    return (
-        <UserContext.Provider value={{ user, setUser }}>
-            {children}
-        </UserContext.Provider>
-    );
+        return <SystemLoader/>; 
+
+    }else if (user && !isCheckingAuth){
+        
+        return (
+            <UserContext.Provider value={{ user, setUser }}>
+                {children}
+            </UserContext.Provider>
+        );
+
+    }else{
+
+        return <SystemLoader/>; 
+
+    }
 }
 
 export function useUser(): [User | null, Dispatch<SetStateAction<User | null>>] {

@@ -6,13 +6,15 @@ import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Plus } from "lucide-react"
+import { Loader, Loader2, Plus } from "lucide-react"
 import { DossierForm } from "@/lib/components/dossierForm"
 import { extendDemande, extendDossier } from "@/lib/types/extendedDossier.type"
 import { EquipementForm } from "@/lib/components/request.form"
 import { dossiers } from "@/lib/endpoints/dossiers"
 
 import { useAlert } from "@/lib/hooks/useAlert"
+import { TextRessource } from "@/lib/ressources/alert.ressource"
+import { useToast } from "@/context/toastModal"
 // import { dossiers } from "@/lib/endpoints/dossiers"
 
 const createEmptyDemande = (): extendDemande => ({
@@ -34,16 +36,19 @@ const createEmptyDossier = (): extendDossier => ({
 export default function MultiDemandesScreen() {
   const router = useRouter()
   const alert = useAlert()
+  const toast = useToast()
 
   const [dossier, setDossier] = React.useState<extendDossier>(createEmptyDossier)
   const [demandes, setDemandes] = React.useState<extendDemande[]>([
     createEmptyDemande(),
   ])
   const [activeIndex, setActiveIndex] = React.useState(0)
-
+  
   const handleDossierChange = (value: extendDossier) => {
     setDossier(value)
   }
+
+  const [isCreating, setIsCreating] = React.useState(false)
 
   const handleDemandeChange = (index: number, value: extendDemande) => {
     setDemandes((prev) => prev.map((d, i) => (i === index ? value : d)))
@@ -80,8 +85,11 @@ export default function MultiDemandesScreen() {
 
     try {
       
+      setIsCreating(true)
+      const date = new Date()
+
       const {dossierId} = await dossiers.creer({
-        Libelle : 'LIBELE',
+        Libelle : 'LIBELE_' + date.getUTCMilliseconds().toString(),
         CourrierFile : dossier.courrier
       })
 
@@ -98,19 +106,24 @@ export default function MultiDemandesScreen() {
               Description : dmd.description,
               QuantiteEquipements : parseInt(dmd.quantiteEquipements),
               ContactNom : "ras",
-              ContactEmail : "",
-              ContactTelephone : "",
-              ContactFonction : "",
+              ContactEmail : "ras",
+              ContactTelephone : "ras",
+              ContactFonction : "ras",
               TypeURL_FicheTechnique : dmd.fiche_technique
           })
         })
 
       ])
 
-
+      setDemandes([createEmptyDemande()])
+      alert.success(TextRessource.dossier_form.created_succes.title, TextRessource.dossier_form.created_succes.desc)
+      toast.success(TextRessource.dossier_form.created_succes.title, TextRessource.dossier_form.created_succes.desc)
 
     } catch (error) {
-      console.log(error)
+      alert.error(TextRessource.dossier_form.created_error.title, TextRessource.dossier_form.created_error.desc)
+    }finally{
+
+      setIsCreating(false)
     }
 
 
@@ -187,8 +200,8 @@ export default function MultiDemandesScreen() {
 
       {/* Bouton global pour tout envoyer */}
       <div className="flex justify-end">
-        <Button size="lg" onClick={handleSubmitAll}>
-          Envoyer le dossier complet
+        <Button  size="lg" onClick={handleSubmitAll} disabled={isCreating}>
+          {isCreating && <Loader2 className="animate-spin"/>} Envoyer le dossier complet
         </Button>
       </div>
     </div>
