@@ -25,4 +25,13 @@ export const TextRessource = {
         }
     },
 
+    header : {
+
+        logout : {
+            title : "Deconnexion",
+            desc : "Souhaitez-vous vraiment vous deconnecter ? "
+        }
+
+    }
+
 }
