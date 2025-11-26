@@ -4,6 +4,8 @@ import { Badge } from '@/components/ui/badge'
 import { ArrowRight, Eye } from 'lucide-react'
 import { RecentDemand } from '../types/dashboard.types'
 import { HumanDate } from '../utils/date.util'
+import { pathsUtils } from '../utils/path.util'
+import { useRouter } from 'next/navigation'
 
 interface RecentDemandsTableProps {
   demands: RecentDemand[]
@@ -22,6 +24,9 @@ const formatDate = (value: string) =>
   new Date(value).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
 
 export function RecentDemandsTable({ demands, onViewMore, onViewDetails }: RecentDemandsTableProps) {
+  
+  const router = useRouter()
+  
   return (
     <Card className="border border-gray-100 bg-white/90 shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between pb-4">
@@ -56,7 +61,7 @@ export function RecentDemandsTable({ demands, onViewMore, onViewDetails }: Recen
                   const status =
                     statusStyles[demand.statut as keyof typeof statusStyles] ?? statusStyles['pending']!
                   return (
-                    <tr key={demand.id} className="transition hover:bg-gray-50/70">
+                    <tr key={demand.id} className="transition hover:bg-gray-50/70" onClick={()=>router.push(pathsUtils.projects + demand.id)}>
                       <td className="px-4 py-3 font-medium text-gray-900">{demand.numero}</td>
                       <td className="px-4 py-3 text-gray-700">{demand.demandes.length}</td>
                       <td className="px-4 py-3">

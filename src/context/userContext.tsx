@@ -15,17 +15,13 @@ import { inherits } from "util";
 import { Client } from "@/lib/interfaces/models.interface";
 import SystemLoader from "@/lib/components/loader";
 import { auth } from "@/lib/endpoints/auth";
+import { UserInter } from "@/lib/endpoints/user.endpoint";
 
-export interface User {
-    userId : string;
-    email : string;
-    raisonSociale : string;
-    contactNom : string;
-}
+
 
 interface UserContextValue {
-  user: User | null;
-  setUser: Dispatch<SetStateAction<User | null>>;
+  user: UserInter | null;
+  setUser: Dispatch<SetStateAction<UserInter | null>>;
 }
 
 const UserContext = createContext<UserContextValue | undefined>(undefined);
@@ -34,7 +30,7 @@ const TOKEN_KEY = process.env["NEXT_PUBLIC_LOCALSTORAGE_TOKEN_KEY"]
 
 export function UserProvider({ children }: PropsWithChildren) {
 
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<UserInter | null>(null);
     const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
     const router = useRouter();
@@ -42,28 +38,31 @@ export function UserProvider({ children }: PropsWithChildren) {
 
     useEffect(() => {
 
-    if (typeof window === "undefined") return;
+        if (typeof window === "undefined") return;
 
-    const token = localStorage.getItem(TOKEN_KEY);
+        const token = localStorage.getItem(TOKEN_KEY);
 
-    if (!token) {
-        // pas de token -> redirection vers login avec la page suivante en query
-        const next = encodeURIComponent(pathname || "/");
-        router.replace(`/auth/login?next=${next}`);
-        return;
-    }
+        if (!token) {
+            // pas de token -> redirection vers login avec la page suivante en query
+            const next = encodeURIComponent(pathname || "/");
+            router.replace(`/auth/login?next=${next}`);
+            return;
+        }
 
-    auth.token() 
-    .then((data)=>{
-        setUser({
-            ...data
+        auth.token() 
+        .then((data)=>{
+            setUser({
+                ...data
+            })
+
+            setIsCheckingAuth(false);
+            return;
+            
+        }).catch((error)=>{
+            router.replace(`/auth/login?message=auth-failed`);
+            return;
         })
-    }).catch((error)=>{
-        router.replace(`/auth/login?message=auth-failed`);
-        return;
-    })
     
-    setIsCheckingAuth(false);
 
     }, [router, pathname, user]);
 
@@ -87,10 +86,13 @@ export function UserProvider({ children }: PropsWithChildren) {
     }
 }
 
-export function useUser(): [User | null, Dispatch<SetStateAction<User | null>>] {
+export function useUser(): [UserInter | null, Dispatch<SetStateAction<UserInter | null>>] {
+    
     const context = useContext(UserContext);
+    
     if (!context) {
-    throw new Error("useUser must be used inside a <UserProvider />");
+        throw new Error("useUser must be used inside a <UserProvider />");
     }
+
     return [context.user, context.setUser];
 }
