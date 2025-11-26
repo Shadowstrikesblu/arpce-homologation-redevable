@@ -15,6 +15,13 @@ export interface RegisterInt {
     contactTelephone: string;
 } 
 
+export interface PasswordForgetten {
+
+    ancienMotDePasse : string;
+    nouveauMotDePasse : string;
+
+}
+
 export const auth = {
 
     login : async (input : loginInt)=>{
@@ -44,6 +51,20 @@ export const auth = {
         const {data} = await axiosClient.post("/api/auth/connect-by-token")
 
         return data 
+        
+    },
+
+    resend_otp : async ()=>{
+        const {data} = await axiosClient.post("/api/auth/resend-otp")
+
+        return data
+    },
+
+    password_forgetten : async (input : PasswordForgetten)=>{
+
+        const {data} = await axiosClient.post("/api/auth/change-password", input)
+
+        return data
     }
 }
 
