@@ -32,6 +32,38 @@ export const TextRessource = {
             desc : "Souhaitez-vous vraiment vous deconnecter ? "
         }
 
+    },
+
+    otp : {
+
+        resend_sucesss : {
+            title : "Succes",
+            desc : "Un nouveau code vous à été envoyé"
+        },
+
+        resend_failed : {
+            title : "Erreur",
+            desc : "Votre session à expirer"
+        }
+    },
+
+    profil : {
+
+        edit : {
+
+            formData_empty : {
+                title : "",
+                desc : "Votre formulaire "
+            },
+
+            failed : {
+
+                title : "",
+                desc : ""
+            }
+
+        }
+
     }
 
 }

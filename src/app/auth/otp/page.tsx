@@ -4,6 +4,9 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { auth } from "@/lib/endpoints/auth";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/context/toastModal";
+import { TextRessource } from "@/lib/ressources/alert.ressource";
+import { Loader2 } from "lucide-react";
 
 export default function OTPPage() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -12,16 +15,21 @@ export default function OTPPage() {
   const [countdown, setCountdown] = useState(30);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const router = useRouter()
-
+  const toast = useToast()
+  const [isSendingOtp, setIsSendingOtp] = useState(false)
 
   useEffect(() => {
+
     if (countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
     }
+    return;
+
   }, [countdown]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
     e.preventDefault();
     setError(null);
     setLoading(true);
@@ -81,17 +89,36 @@ export default function OTPPage() {
     }
   };
 
-  const resendCode = () => {
-    if (countdown === 0) {
-      setCountdown(30);
-      setError(null);
-      // TODO: Appel API pour renvoyer le code
-      console.log("Demande de renvoi du code OTP");
+  const resendCode = async () => {
+
+    try {
+      
+      if (countdown === 0) {
+  
+        setCountdown(30);
+        setError(null);
+
+        setIsSendingOtp(true)
+        await auth.resend_otp()
+  
+        toast.success(TextRessource.otp.resend_sucesss.desc, TextRessource.otp.resend_sucesss.title)
+      }
+  
+      return;
+
+    } catch (error) {
+
+        toast.error(TextRessource.otp.resend_failed.desc, TextRessource.otp.resend_failed.title)
+      
+    }finally{
+      setIsSendingOtp(false)
     }
+
+
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-xl p-8 space-y-6">
           <div className="text-center space-y-2">
@@ -154,14 +181,14 @@ export default function OTPPage() {
                 <button
                   type="button"
                   onClick={resendCode}
-                  disabled={countdown > 0}
+                  disabled={countdown > 0 || isSendingOtp}
                   className={`font-medium transition-colors ${
                     countdown > 0
                       ? "text-gray-400 cursor-not-allowed"
                       : "text-[#af3338] hover:text-[#8f2a2e]"
                   }`}
                 >
-                  Renvoyer {countdown > 0 && `(${countdown}s)`}
+                 {isSendingOtp && <Loader2 className="animate-spin"/>} Renvoyer {countdown > 0 && `(${countdown}s)`}
                 </button>
               </p>
             </div>
@@ -171,7 +198,7 @@ export default function OTPPage() {
         {/* Footer */}
         <div className="mt-6">
           <p className="text-center text-xs text-gray-400">
-            © 2024 Portail d'homologation. Tous droits réservés.
+            © 2025 ARPCE. Tous droits réservés.
           </p>
         </div>
       </div>
