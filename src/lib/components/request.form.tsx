@@ -22,7 +22,7 @@ import { Trash, Trash2 } from "lucide-react"
 import { validateExtendDemande } from "../utils/checkEquipement"
 import { useToast } from "@/context/toastModal"
 import { useAlert } from "../hooks/useAlert"
-import { ErrorText } from "../ressources/error.ressource"
+import { TextRessource } from "../ressources/alert.ressource"
 
 type EquipementFormProps = {
   label: string
@@ -84,7 +84,7 @@ export const EquipementForm: React.FC<EquipementFormProps> = ({
       
     onChange(values)
 
-    toast.success(ErrorText.dossier_form.ep_added.title)
+    toast.success(TextRessource.dossier_form.ep_added.title)
 
     return;
   }
