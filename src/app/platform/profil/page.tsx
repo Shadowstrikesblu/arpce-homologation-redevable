@@ -141,7 +141,7 @@ export default function ProfilPage() {
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-gray-50 to-gray-100">
       {/* Header */}
-      <div className="bg-linear-to-r from-[#af3338] to-[#c9454a] text-white shadow-lg rounded-xl">
+      <div className="bg-linear-to-r from-[#7a9648] to-[#8ba755] text-white shadow-lg rounded-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row items-center md:items-end gap-6">
             {/* Avatar */}
@@ -153,7 +153,7 @@ export default function ProfilPage() {
               {editing && (
                 <button
                   title="Modifier l'avatar"
-                  className="absolute bottom-0 right-0 bg-[#8ba755] hover:bg-[#7a9648] text-white rounded-full p-2 shadow-lg border-2 border-white"
+                  className="absolute bottom-0 right-0 bg-[#c9454a] hover:bg-[#af3338] text-white rounded-full p-2 shadow-lg border-2 border-white"
                 >
                   <Edit2 className="h-4 w-4" />
                 </button>
