@@ -6,4 +6,5 @@ export const pathsUtils = {
     request         :       "/platform/request/",
     request_form    :       "/platform/projects/create/",
     projects        :       "/platform/projects/",
+    aide            :       "/platform/aide"
 }

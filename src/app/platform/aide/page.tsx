@@ -96,7 +96,8 @@ function SupportForm() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="bg-white shadow-md rounded-xl p-6 space-y-6 border max-w-3xl mx-auto"
+      className="bg-white shadow-md rounded-xl p-6 space-y-6 border"
+      id="contact"
     >
       <div className="text-center">
         <h2 className="text-lg font-semibold">Contactez-nous</h2>
@@ -123,7 +124,7 @@ function SupportForm() {
         <Textarea name="message" placeholder="Expliquez-nous votre idée ou votre problème..." className="min-h-[140px]" value={form.message} onChange={handleChange} />
       </div>
 
-      <Button onClick={handleSubmit} className="w-full bg-[#af3338] text-white hover:bg-[#972b31] flex items-center gap-2" disabled={loading}>
+      <Button onClick={handleSubmit} className="w-full bg-primary hover:bg-secondary text-white  flex items-center gap-2" disabled={loading}>
         <Send className="h-4 w-4" />
         {loading ? "Envoi..." : "Envoyer"}
       </Button>
@@ -158,10 +159,68 @@ export default function AidePage() {
         {/* HEADER */}
         <div className="text-center space-y-1">
           <h1 className="text-3xl font-bold text-gray-900">Centre d’aide</h1>
-          <p className="text-gray-600 text-sm">Guides pratiques & FAQ</p>
+          <p className="text-gray-600 text-sm">Prise de contact & FAQ</p>
         </div>
 
         {/* 2 COLONNES */}
+
+
+        <div className="max-w-5xl w-full mt-12" id="localization"> 
+          <div className="bg-white shadow-md rounded-xl p-5 mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+              <div className="md:col-span-1">
+                <h3 className="text-lg font-semibold text-gray-900">Adresse de l'entreprise</h3>
+                <p className="text-gray-600 text-sm mt-2">Retrouvez-nous au siège social ou contactez-nous via les informations ci-dessous.</p>
+
+                <div className="mt-4 text-sm text-gray-700">
+                  {addresses.map((addr) => (
+                    <div key={addr.id} className="space-y-2">
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-900">{addr.title}</h4>
+                        <p className="text-gray-600 text-sm">{addr.address}</p>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+                        <div className="flex items-center text-gray-700">
+                          <Phone className="h-4 w-4 mr-2 text-[#af3338]" />
+                          <a className="text-sm text-gray-700 hover:underline" href={`tel:${addr.phone.replace(/\s+/g, '')}`}>{addr.phone}</a>
+                        </div>
+
+                        <div className="flex items-center text-gray-700">
+                          <Mail className="h-4 w-4 mr-2 text-[#af3338]" />
+                          <a className="text-sm text-gray-700 hover:underline" href={`mailto:${addr.email}`}>{addr.email}</a>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2 mt-3">
+                        <Button asChild variant="outline" size="sm">
+                          <a href={`https://maps.app.goo.gl/f1WTZaXV7VJvS6xLA`} target="_blank" rel="noreferrer">Ouvrir dans Google Maps</a>
+                        </Button>
+
+                        <Button asChild variant="ghost" size="sm">
+                          <a href={`https://www.google.com/maps/dir/?api=1&destination=${addr.lat},${addr.lon}`} target="_blank" rel="noreferrer">Itinéraire</a>
+              
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="md:col-span-2 h-56 md:h-72 rounded overflow-hidden">
+                <iframe
+                  title="Adresse de l'entreprise"
+                  className="w-full h-full border-0"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4201.481372308743!2d15.270537075238312!3d-4.275554046200779!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1a6a3312c1e26947%3A0xa00866cabd906e04!2sAgence%20de%20R%C3%A9lation%20des%20Postes%20et%20des%20Communication%20Electroniques!5e1!3m2!1sfr!2scg!4v1764585086641!5m2!1sfr!2scg"
+                  allowFullScreen={true}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           
           {/* COLONNE GAUCHE */}
@@ -229,67 +288,9 @@ export default function AidePage() {
           </div>
 
         </div>
-      
-        {/*  FORMULAIRE DE CONTACT - inséré avant l'adresse */}
+
         <SupportForm />
 
-        {/*  ADRESSE DE L'ENTREPRISE */}
-
-        <div className="max-w-5xl w-full mt-12"> 
-          <div className="bg-white shadow-md rounded-xl p-5 mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
-              <div className="md:col-span-1">
-                <h3 className="text-lg font-semibold text-gray-900">Adresse de l'entreprise</h3>
-                <p className="text-gray-600 text-sm mt-2">Retrouvez-nous au siège social ou contactez-nous via les informations ci-dessous.</p>
-
-                <div className="mt-4 text-sm text-gray-700">
-                  {addresses.map((addr) => (
-                    <div key={addr.id} className="space-y-2">
-                      <div>
-                        <h4 className="text-sm font-semibold text-gray-900">{addr.title}</h4>
-                        <p className="text-gray-600 text-sm">{addr.address}</p>
-                      </div>
-
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
-                        <div className="flex items-center text-gray-700">
-                          <Phone className="h-4 w-4 mr-2 text-[#af3338]" />
-                          <a className="text-sm text-gray-700 hover:underline" href={`tel:${addr.phone.replace(/\s+/g, '')}`}>{addr.phone}</a>
-                        </div>
-
-                        <div className="flex items-center text-gray-700">
-                          <Mail className="h-4 w-4 mr-2 text-[#af3338]" />
-                          <a className="text-sm text-gray-700 hover:underline" href={`mailto:${addr.email}`}>{addr.email}</a>
-                        </div>
-                      </div>
-
-                      <div className="flex gap-2 mt-3">
-                        <Button asChild variant="outline" size="sm">
-                          <a href={`https://maps.app.goo.gl/f1WTZaXV7VJvS6xLA`} target="_blank" rel="noreferrer">Ouvrir dans Google Maps</a>
-                        </Button>
-
-                        <Button asChild variant="ghost" size="sm">
-                          <a href={`https://www.google.com/maps/dir/?api=1&destination=${addr.lat},${addr.lon}`} target="_blank" rel="noreferrer">Itinéraire</a>
-              
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="md:col-span-2 h-56 md:h-72 rounded overflow-hidden">
-                <iframe
-                  title="Adresse de l'entreprise"
-                  className="w-full h-full border-0"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4201.481372308743!2d15.270537075238312!3d-4.275554046200779!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1a6a3312c1e26947%3A0xa00866cabd906e04!2sAgence%20de%20R%C3%A9lation%20des%20Postes%20et%20des%20Communication%20Electroniques!5e1!3m2!1sfr!2scg!4v1764585086641!5m2!1sfr!2scg"
-                  allowFullScreen={true}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
 
       </div>
     </div>

@@ -74,11 +74,11 @@ export function SupportAndHelpSection() {
 
   return (
     <section className="space-y-6 rounded-2xl bg-white/90 p-6 shadow-sm border border-gray-100">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Support & Paramètres</h3>
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">Support</h3>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <button
-          onClick={() => router.push('/aide')}
+      <div className="grid gap-4 md:grid-cols-1">
+        {/* <button
+          onClick={() => router.push(pathsUtils.aide + '#faq')}
           className={baseCardClasses}
           type="button"
         >
@@ -89,21 +89,21 @@ export function SupportAndHelpSection() {
             <p className="text-sm font-semibold text-gray-900">Centre d’aide</p>
             <p className="text-xs text-gray-500">Guides pratiques et FAQ</p>
           </span>
-        </button>
+        </button> */}
 
-        <button
+        {/* <button
           onClick={() => router.push('/parametres')}
           className={baseCardClasses}
           type="button"
         >
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-600">
+          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-600 group-hover:rotate-12 transition-transform duration-200">
             <Settings className="h-5 w-5" />
           </span>
           <span className="text-left">
             <p className="text-sm font-semibold text-gray-900">Paramètres</p>
             <p className="text-xs text-gray-500">Gérer vos préférences</p>
           </span>
-        </button>
+        </button> */}
       </div>
 
       <Card className="mt-8 bg-linear-to-r from-[#af3338] to-[#c9454a] text-white">
@@ -118,7 +118,7 @@ export function SupportAndHelpSection() {
             <Button 
               variant="secondary" 
               className="bg-white text-[#af3338] hover:bg-gray-100"
-              onClick={() => router.push('/support')}
+              onClick={() => router.push(pathsUtils.aide + '#contact')}
             >
               Contacter le support
             </Button>
