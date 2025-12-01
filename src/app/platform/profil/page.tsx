@@ -14,61 +14,53 @@ import {
 import { getUserById, updateUser, deleteUser, logout, UpdateClientData } from "@/lib/services/user.service";
 import { Client } from "@/lib/interfaces/models.interface";
 import { Trash2, User as UserIcon, Mail, Phone, MapPin, Building2, Save, X, Edit2, Settings } from "lucide-react";
+import {useUser } from "@/context/userContext";
+import SystemLoader from "@/lib/components/loader";
+import { UserEndpoit, UserInter } from "@/lib/endpoints/user.endpoint";
+import { useToast } from "@/context/toastModal";
+import { TextRessource } from "@/lib/ressources/alert.ressource";
 
 export default function ProfilPage() {
 
   
   const router = useRouter();
-  const [user, setUser] = useState<Client | null>(null);
+  const [user, setUser] = useUser();
+
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [formData, setFormData] = useState<UpdateClientData>({});
+  const [formData, setFormData] = useState<UserInter>();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-
-  const getUserId = (): number => {
-    if (typeof window !== "undefined") {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        const parsed = JSON.parse(storedUser);
-        return parsed.id;
-      }
-    }
-    return 1;
-  };
-
+  const toast = useToast()
   useEffect(() => {
+
+
     const fetchUser = async () => {
+
       try {
-        const userId = getUserId();
-        const userData = await getUserById(userId);
-        setUser(userData);
-        setFormData({
-          raisonSociale: userData.raisonSociale || "",
-          registreCommerce: userData.registreCommerce || "",
-          email: userData.email || "",
-          adresse: userData.adresse || "",
-          bp: userData.bp || "",
-          ville: userData.ville || "",
-          pays: userData.pays || "",
-          contactNom: userData.contactNom || "",
-          contactFonction: userData.contactFonction || "",
-          contactTelephone: userData.contactTelephone || "",
-        });
+        
+        if(!user) throw Error();
+
+        setFormData(user);
         setError(null);
+
       } catch (err) {
+
         setError(err instanceof Error ? err.message : "Erreur lors du chargement du profil");
         console.error("Erreur:", err);
+
       } finally {
+
         setLoading(false);
+
       }
     };
 
     fetchUser();
-  }, []);
+  }, [user]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -79,71 +71,36 @@ export default function ProfilPage() {
   };
 
   const handleSave = async () => {
-    setSaving(true);
-    setError(null);
-    setSuccess(null);
+
     try {
-      const userId = getUserId();
-      const updatedUser = await updateUser(userId, formData);
-      setUser(updatedUser);
-      setEditing(false);
-      setSuccess("Profil mis à jour avec succès");
-      if (typeof window !== "undefined") {
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Erreur lors de la mise à jour");
-      console.error("Erreur:", err);
-    } finally {
-      setSaving(false);
+      
+      if(!formData) return toast.warning(TextRessource.profil.edit.formData_empty.desc, TextRessource.profil.edit.formData_empty.title)
+
+      await UserEndpoit.update_user(formData)
+      setUser(formData)
+      return;
+
+    } catch (error) {
+      toast.error(TextRessource.profil.edit.failed.desc, TextRessource.profil.edit.failed.title)
     }
+
   };
 
   const handleDelete = async () => {
-    setDeleting(true);
-    setError(null);
-    try {
-      const userId = getUserId();
-      await deleteUser(userId);
-      await logout();
-      router.push("/login");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Erreur lors de la suppression");
-      console.error("Erreur:", err);
-      setDeleting(false);
-      setShowDeleteDialog(false);
-    }
+
   };
 
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#af3338] border-t-transparent mx-auto"></div>
-          <p className="mt-6 text-gray-600 font-medium">Chargement du profil...</p>
-        </div>
-      </div>
-    );
+    return <SystemLoader/>
   }
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-        <div className="text-center bg-white p-8 rounded-2xl shadow-lg">
-          <p className="text-[#af3338] mb-6 font-semibold text-lg">Erreur: Impossible de charger le profil</p>
-          <Button onClick={() => router.push("/")} className="bg-[#af3338] hover:bg-[#8f2a2e]">
-            Retour à l&apos;accueil
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  if(!user) return router.back()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50 to-gray-100">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-gray-50 to-gray-100">
       {/* Header avec couleur primaire */}
-      <div className="bg-gradient-to-r from-[#af3338] to-[#c9454a] text-white shadow-lg rounded-b-lg">
+      <div className="bg-linear-to-r from-[#af3338] to-[#c9454a] text-white shadow-lg rounded-b-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row items-center md:items-end gap-6">
             {/* Avatar */}
@@ -162,7 +119,7 @@ export default function ProfilPage() {
             {/* Informations principales */}
             <div className="flex-1 text-center md:text-left">
               <h1 className="text-3xl md:text-4xl font-bold mb-2">{user.raisonSociale || "Profil"}</h1>
-              <p className="text-white/90 text-lg mb-1">{user.code || `Code: ${user.id}`}</p>
+              <p className="text-white/90 text-lg mb-1">{`Code: ${user.userId}`}</p>
               {user.registreCommerce && (
                 <p className="text-white/80 text-sm">RC: {user.registreCommerce}</p>
               )}
@@ -219,7 +176,7 @@ export default function ProfilPage() {
                       <input
                         type="text"
                         name="raisonSociale"
-                        value={formData.raisonSociale || ""}
+                        value={formData?.raisonSociale || ""}
                         onChange={handleInputChange}
                         className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#af3338] focus:border-[#af3338] transition-all"
                       />
@@ -234,7 +191,7 @@ export default function ProfilPage() {
                       <input
                         type="text"
                         name="registreCommerce"
-                        value={formData.registreCommerce || ""}
+                        value={formData?.registreCommerce || ""}
                         onChange={handleInputChange}
                         className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#af3338] focus:border-[#af3338] transition-all"
                       />
@@ -253,7 +210,7 @@ export default function ProfilPage() {
                     <input
                       type="email"
                       name="email"
-                      value={formData.email || ""}
+                      value={formData?.email || ""}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#af3338] focus:border-[#af3338] transition-all"
                     />
@@ -271,7 +228,7 @@ export default function ProfilPage() {
                     <input
                       type="text"
                       name="adresse"
-                      value={formData.adresse || ""}
+                      value={formData?.adresse || ""}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#af3338] focus:border-[#af3338] transition-all"
                     />
@@ -287,7 +244,7 @@ export default function ProfilPage() {
                       <input
                         type="text"
                         name="bp"
-                        value={formData.bp || ""}
+                        value={formData?.bp || ""}
                         onChange={handleInputChange}
                         className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#af3338] focus:border-[#af3338] transition-all"
                       />
@@ -302,7 +259,7 @@ export default function ProfilPage() {
                       <input
                         type="text"
                         name="ville"
-                        value={formData.ville || ""}
+                        value={formData?.ville || ""}
                         onChange={handleInputChange}
                         className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#af3338] focus:border-[#af3338] transition-all"
                       />
@@ -317,7 +274,7 @@ export default function ProfilPage() {
                       <input
                         type="text"
                         name="pays"
-                        value={formData.pays || ""}
+                        value={formData?.pays || ""}
                         onChange={handleInputChange}
                         className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#af3338] focus:border-[#af3338] transition-all"
                       />
@@ -343,7 +300,7 @@ export default function ProfilPage() {
                     <input
                       type="text"
                       name="contactNom"
-                      value={formData.contactNom || ""}
+                      value={formData?.contactNom || ""}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#8ba755] focus:border-[#8ba755] transition-all"
                     />
@@ -358,7 +315,7 @@ export default function ProfilPage() {
                     <input
                       type="text"
                       name="contactFonction"
-                      value={formData.contactFonction || ""}
+                      value={formData?.contactFonction || ""}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#8ba755] focus:border-[#8ba755] transition-all"
                     />
@@ -376,7 +333,7 @@ export default function ProfilPage() {
                     <input
                       type="tel"
                       name="contactTelephone"
-                      value={formData.contactTelephone || ""}
+                      value={formData?.contactTelephone || ""}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#8ba755] focus:border-[#8ba755] transition-all"
                     />
@@ -411,18 +368,7 @@ export default function ProfilPage() {
                   <Button
                     onClick={() => {
                       setEditing(false);
-                      setFormData({
-                        raisonSociale: user.raisonSociale || "",
-                        registreCommerce: user.registreCommerce || "",
-                        email: user.email || "",
-                        adresse: user.adresse || "",
-                        bp: user.bp || "",
-                        ville: user.ville || "",
-                        pays: user.pays || "",
-                        contactNom: user.contactNom || "",
-                        contactFonction: user.contactFonction || "",
-                        contactTelephone: user.contactTelephone || "",
-                      });
+                      setFormData(user);
                     }}
                     variant="outline"
                     className="w-full border-2 border-gray-300 hover:bg-gray-50 font-semibold py-6 text-base"
