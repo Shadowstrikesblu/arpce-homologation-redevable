@@ -103,6 +103,7 @@ export function DashboardHeader() {
             <div className="relative" ref={menuRef}>
               <button
                 type="button"
+                title="profile"
                 onClick={() => setMenuOpen((prev) => !prev)}
                 className="flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-sm font-medium text-white hover:bg-white/20 transition-colors"
               >
