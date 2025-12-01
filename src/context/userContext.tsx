@@ -36,35 +36,31 @@ export function UserProvider({ children }: PropsWithChildren) {
     const router = useRouter();
     const pathname = usePathname();
 
-    useEffect(() => {
 
+    useEffect(() => {
         if (typeof window === "undefined") return;
 
         const token = localStorage.getItem(TOKEN_KEY);
 
         if (!token) {
-            // pas de token -> redirection vers login avec la page suivante en query
             const next = encodeURIComponent(pathname || "/");
             router.replace(`/auth/login?next=${next}`);
+            setIsCheckingAuth(false);
             return;
         }
 
         auth.token() 
-        .then((data)=>{
-            setUser({
-                ...data
+            .then((data: UserInter) => {
+                setUser(data);
             })
+            .catch((error) => {
+                router.replace(`/auth/login?message=auth-failed`);
+            })
+            .finally(() => {
+                setIsCheckingAuth(false);
+            });
 
-            setIsCheckingAuth(false);
-            return;
-            
-        }).catch((error)=>{
-            router.replace(`/auth/login?message=auth-failed`);
-            return;
-        })
-    
-
-    }, [router, pathname, user]);
+    }, [pathname, router]);
 
 
     if (!user && isCheckingAuth) {
