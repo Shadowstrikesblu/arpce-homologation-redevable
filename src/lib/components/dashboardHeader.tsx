@@ -74,10 +74,11 @@ export function DashboardHeader() {
             <Image
               src="/logo_arpce.png"
               alt="Logo ARPCE"
-              width={70}
-              height={70}
-              className="object-contain rounded-xl"
+              width={60}
+              height={60}
+              className="object-contain rounded-xl cursor-pointer"
               priority
+              onClick={()=>router.push(pathsUtils.dashboard)}
             />
             <div>
               <h1 className="text-3xl font-bold items-center gap-2">
@@ -124,7 +125,7 @@ export function DashboardHeader() {
                   <button
                     onClick={() => {
                       setMenuOpen(false)
-                      router.push("/support")
+                      router.push(pathsUtils.aide + '#contact')
                     }}
                     className="flex w-full items-center gap-3 px-4 py-2 text-sm hover:bg-gray-100"
                   >
@@ -134,7 +135,7 @@ export function DashboardHeader() {
                   <button
                     onClick={() => {
                       setMenuOpen(false)
-                      router.push("/aide")
+                      router.push(pathsUtils.aide)
                     }}
                     className="flex w-full items-center gap-3 px-4 py-2 text-sm hover:bg-gray-100"
                   >
