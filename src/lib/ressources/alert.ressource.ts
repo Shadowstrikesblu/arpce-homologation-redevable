@@ -60,6 +60,12 @@ export const TextRessource = {
 
                 title : "",
                 desc : ""
+            },
+
+            success : {
+                desc : "Profile mises à jour !",
+                title : "Succes"
+
             }
 
         }
