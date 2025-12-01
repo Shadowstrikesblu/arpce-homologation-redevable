@@ -14,13 +14,36 @@ import {
   CreditCard, 
   Smartphone, 
   Building, 
+  Landmark,
   CheckCircle2,
-  Loader
+  Loader,
+  AlertTriangle
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
+const MOBILE_MONEY_FEE_RATE = 0.015
+
+const formatCfa = (value: number) =>
+  `${new Intl.NumberFormat("fr-FR").format(Math.round(value))} FCFA`
+
+const sanitizeRib = (value: string) => value.replace(/\s+/g, "").toUpperCase()
+
+const RIB_ARPCE = {
+  titulaire: process.env["NEXT_PUBLIC_ARPCE_RIB_TITULAIRE"] ?? "Autorité de Régulation des Communications Électroniques et des Postes",
+  banque: process.env["NEXT_PUBLIC_ARPCE_RIB_BANQUE"] ?? "Banque de l'ARPCE",
+  numero: process.env["NEXT_PUBLIC_ARPCE_RIB_NUMERO"] ?? "XXXXXXXXXXXXXX",
+  agence: process.env["NEXT_PUBLIC_ARPCE_RIB_AGENCE"] ?? "Agence principale",
+  swift: process.env["NEXT_PUBLIC_ARPCE_RIB_SWIFT"] ?? "SWIFTCGCG",
+}
+
+const RIB_BANQUE = {
+  banque: process.env["NEXT_PUBLIC_BANQUE_PARTENAIRE"] ?? "Banque partenaire",
+  adresse: process.env["NEXT_PUBLIC_BANQUE_PARTENAIRE_ADRESSE"] ?? "Adresse non renseignée",
+  contact: process.env["NEXT_PUBLIC_BANQUE_PARTENAIRE_CONTACT"] ?? "+242 XX XX XX XX",
+}
+
 // Types
-type PaymentMode = "mobile_money" | "bank"
+type PaymentMode = "mobile_money" | "depot" | "virement"
 
 type MobileMoneyFormValues = {
   phone: string
@@ -39,9 +62,16 @@ type PaymentData = {
   mobileMoney?: {
     phone: string
     operator: "mtn" | "airtel"
+    fees: number
+    totalWithFees: number
   }
-  bankTransfer?: {
+  depot?: {
     files: File[]
+  }
+  virement?: {
+    files: File[]
+    rib: string
+    sameBank: boolean
   }
 }
 
@@ -231,7 +261,16 @@ export default function ScreenPaiement({
 }: EcranPaiementProps) {
   const router = useRouter()
   const [currentMode, setCurrentMode] = React.useState<PaymentMode>(defaultMode)
-  const [uploadedFiles, setUploadedFiles] = React.useState<File[]>([])
+  const [depositFiles, setDepositFiles] = React.useState<File[]>([])
+  const [transferFiles, setTransferFiles] = React.useState<File[]>([])
+  const [userRib, setUserRib] = React.useState("")
+
+  const mobileFees = React.useMemo(() => {
+    if (!montant) return 0
+    return montant * MOBILE_MONEY_FEE_RATE
+  }, [montant])
+
+  const totalWithFees = (montant ?? 0) + mobileFees
 
   const handleMobileMoneyValidate = (values: MobileMoneyFormValues) => {
     const operator = values.phone.includes("05") ? "airtel" : "mtn" as "mtn" | "airtel"
@@ -240,19 +279,19 @@ export default function ScreenPaiement({
       mode: "mobile_money",
       mobileMoney: {
         phone: values.phone,
-        operator
+        operator,
+        fees: mobileFees,
+        totalWithFees
       }
     })
   }
 
-  const handleBankUpload = (files: File[]) => {
-    setUploadedFiles(files)
-    onPaiementSubmit({
-      mode: "bank",
-      bankTransfer: {
-        files
-      }
-    })
+  const handleDepositUpload = (files: File[]) => {
+    setDepositFiles(files)
+  }
+
+  const handleTransferUpload = (files: File[]) => {
+    setTransferFiles(files)
   }
 
   const handleFinaliserPaiement = () => {
@@ -261,17 +300,33 @@ export default function ScreenPaiement({
       return
     }
     
-    if (currentMode === "bank" && uploadedFiles.length > 0) {
+    if (currentMode === "depot" && depositFiles.length > 0) {
       onPaiementSubmit({
-        mode: "bank",
-        bankTransfer: {
-          files: uploadedFiles
+        mode: "depot",
+        depot: {
+          files: depositFiles
+        }
+      })
+      return
+    }
+
+    if (currentMode === "virement" && transferFiles.length > 0) {
+      onPaiementSubmit({
+        mode: "virement",
+        virement: {
+          files: transferFiles,
+          rib: userRib,
+          sameBank: sanitizeRib(userRib) !== "" && sanitizeRib(userRib) === sanitizeRib(RIB_ARPCE.numero)
         }
       })
     }
   }
 
-  const isBankReady = currentMode === "bank" && uploadedFiles.length > 0
+  const isDepositReady = currentMode === "depot" && depositFiles.length > 0
+  const isTransferReady = currentMode === "virement" && transferFiles.length > 0 && sanitizeRib(userRib).length >= 10
+  const isDifferentBank =
+    sanitizeRib(userRib).length >= 10 &&
+    sanitizeRib(userRib) !== sanitizeRib(RIB_ARPCE.numero)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
@@ -300,12 +355,16 @@ export default function ScreenPaiement({
 
               <CardContent className="p-6">
                 <Tabs value={currentMode} onValueChange={(v) => setCurrentMode(v as PaymentMode)} className="w-full">
-                  <TabsList className="grid grid-cols-2 mb-6">
+                  <TabsList className="grid grid-cols-3 mb-6">
                     <TabsTrigger value="mobile_money" className="flex items-center gap-2">
                       <Smartphone className="h-4 w-4" />
                       Mobile Money
                     </TabsTrigger>
-                    <TabsTrigger value="bank" className="flex items-center gap-2">
+                    <TabsTrigger value="depot" className="flex items-center gap-2">
+                      <Landmark className="h-4 w-4" />
+                      Dépôt bancaire
+                    </TabsTrigger>
+                    <TabsTrigger value="virement" className="flex items-center gap-2">
                       <Building className="h-4 w-4" />
                       Virement bancaire
                     </TabsTrigger>
@@ -319,26 +378,52 @@ export default function ScreenPaiement({
                         Vous recevrez une demande de paiement sur votre téléphone.
                       </p>
                     </div>
+                    <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+                      <div className="flex items-center justify-between">
+                        <p>Frais de transaction ({(MOBILE_MONEY_FEE_RATE * 100).toFixed(1)}%)</p>
+                        <p className="font-semibold">{formatCfa(mobileFees)}</p>
+                      </div>
+                      <div className="mt-2 flex items-center justify-between text-gray-900">
+                        <p>Total débité</p>
+                        <p className="font-semibold">{formatCfa(totalWithFees)}</p>
+                      </div>
+                    </div>
                     <MobileMoneyForm onValidate={handleMobileMoneyValidate} />
                   </TabsContent>
 
-                  <TabsContent value="bank" className="space-y-4">
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                      <h3 className="font-semibold text-green-900 mb-2">Virement ou dépôt bancaire</h3>
+                  <TabsContent value="depot" className="space-y-4">
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 space-y-3">
+                      <h3 className="font-semibold text-green-900">Dépôt bancaire (frais 0 FCFA)</h3>
                       <p className="text-green-700 text-sm">
-                        Effectuez le virement puis uploadez votre justificatif. 
-                        Votre demande sera traitée après vérification.
+                        Présentez-vous à la banque partenaire et effectuez un dépôt direct sur le compte de l&apos;ARPCE. 
+                        Enregistrez ensuite le bordereau signé pour finaliser la procédure.
                       </p>
+                      <div className="rounded-lg bg-white p-4 shadow-sm border border-green-100 space-y-2">
+                        <p className="text-sm font-semibold text-gray-700">Coordonnées bancaires ARPCE</p>
+                        <div className="text-sm text-gray-600 space-y-1">
+                          <p><span className="font-medium text-gray-800">Titulaire :</span> {RIB_ARPCE.titulaire}</p>
+                          <p><span className="font-medium text-gray-800">Banque :</span> {RIB_ARPCE.banque}</p>
+                          <p><span className="font-medium text-gray-800">N° RIB :</span> {RIB_ARPCE.numero}</p>
+                          <p><span className="font-medium text-gray-800">Agence :</span> {RIB_ARPCE.agence}</p>
+                          <p><span className="font-medium text-gray-800">Code SWIFT :</span> {RIB_ARPCE.swift}</p>
+                        </div>
+                      </div>
+                      <div className="rounded-lg bg-white p-4 shadow-sm border border-green-100 space-y-1">
+                        <p className="text-sm font-semibold text-gray-700">Informations banque partenaire</p>
+                        <p className="text-sm text-gray-600"><span className="font-medium text-gray-800">Banque :</span> {RIB_BANQUE.banque}</p>
+                        <p className="text-sm text-gray-600"><span className="font-medium text-gray-800">Adresse :</span> {RIB_BANQUE.adresse}</p>
+                        <p className="text-sm text-gray-600"><span className="font-medium text-gray-800">Contact :</span> {RIB_BANQUE.contact}</p>
+                      </div>
                     </div>
                     <PaiementUpload
-                      title="Justificatif de virement ou dépôt bancaire"
+                      title="Bordereau de dépôt signé"
                       multiple={false}
                       maxSizeMb={10}
                       accept=".pdf,.jpg,.jpeg,.png"
-                      onFiles={handleBankUpload}
+                      onFiles={handleDepositUpload}
                     />
-                    
-                    {isBankReady && (
+
+                    {isDepositReady && (
                       <div className="flex justify-end">
                         <Button 
                           onClick={handleFinaliserPaiement}
@@ -351,6 +436,64 @@ export default function ScreenPaiement({
                             <CheckCircle2 className="h-4 w-4 mr-2" />
                           )}
                           Finaliser le dépôt
+                        </Button>
+                      </div>
+                    )}
+                  </TabsContent>
+
+                  <TabsContent value="virement" className="space-y-4">
+                    <div className="bg-sky-50 border border-sky-200 rounded-lg p-4 space-y-2">
+                      <h3 className="font-semibold text-sky-900">Virement bancaire</h3>
+                      <p className="text-sky-700 text-sm">
+                        Indiquez le RIB du compte émetteur. Si votre banque est différente de celle de l&apos;ARPCE, des frais interbancaires peuvent s&apos;appliquer.
+                      </p>
+                      <div className="rounded-lg bg-white p-4 shadow-sm border border-sky-100">
+                        <p className="text-sm font-semibold text-gray-700 mb-2">RIB de référence ARPCE</p>
+                        <p className="text-sm text-gray-600">{RIB_ARPCE.numero}</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700">
+                        RIB du redevable (compte émetteur)
+                      </label>
+                      <Input
+                        placeholder="Ex : 10015 00100 12345678901 09"
+                        value={userRib}
+                        onChange={(event) => setUserRib(event.target.value)}
+                      />
+                      {isDifferentBank && (
+                        <div className="flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+                          <AlertTriangle className="h-4 w-4 mt-0.5" />
+                          <p>
+                            Votre RIB est différent de celui de l&apos;ARPCE. 
+                            Des frais supplémentaires pourront être appliqués par votre banque pour ce virement.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    <PaiementUpload
+                      title="Justificatif de virement (ordre, capture, PDF)"
+                      multiple={false}
+                      maxSizeMb={10}
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      onFiles={handleTransferUpload}
+                    />
+
+                    {isTransferReady && (
+                      <div className="flex justify-end">
+                        <Button 
+                          onClick={handleFinaliserPaiement}
+                          disabled={loading}
+                          className="bg-[#af3338] hover:bg-[#9a2d32]"
+                        >
+                          {loading ? (
+                            <Loader className="mr-2 animate-spin" />
+                          ) : (
+                            <CheckCircle2 className="h-4 w-4 mr-2" />
+                          )}
+                          Finaliser le virement
                         </Button>
                       </div>
                     )}
