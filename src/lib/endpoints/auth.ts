@@ -13,6 +13,11 @@ export interface RegisterInt {
     password: string;
     contactNom: string;
     contactTelephone: string;
+    captchaToken : string;
+    typeClient : 'entreprise' | 'particulier';
+    adresse : string;
+    ville: string;
+    pays : string
 } 
 
 export interface PasswordForgetten {
