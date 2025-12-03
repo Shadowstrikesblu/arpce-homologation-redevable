@@ -1,0 +1,15 @@
+export const CONGO_VILLES = [
+  { value: "brazzaville", label: "Brazzaville" },
+  { value: "pointe-noire", label: "Pointe-Noire" },
+  { value: "dolisie", label: "Dolisie" },
+  { value: "nkayi", label: "Nkayi" },
+  { value: "ouesso", label: "Ouesso" },
+  { value: "impfondo", label: "Impfondo" },
+  { value: "kinkala", label: "Kinkala" },
+  { value: "sibiti", label: "Sibiti" },
+  { value: "owando", label: "Owando" },
+  { value: "madingou", label: "Madingou" },
+  { value: "makoua", label: "Makoua" },
+  { value: "mossendjo", label: "Mossendjo" },
+  { value: "autre", label: "Autre..." },
+];
