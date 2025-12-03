@@ -665,7 +665,7 @@ export default function InscriptionPage() {
                     checked={formData.acceptConditions}
                     onChange={handleChange}
                     disabled={isSubmitting}
-                    className="h-4 w-4 mt-1 text-[#af3338] focus:ring-[#af3338] border-gray-300 rounded bg-primary rounded-full"
+                    className="h-4 w-4 mt-1 text-[#af3338] focus:ring-[#af3338] border-gray-300 bg-primary rounded-full"
                   />
                   <label
                     htmlFor="acceptConditions"
@@ -697,7 +697,7 @@ export default function InscriptionPage() {
 
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-[#af3338] to-[#c9454a] hover:from-[#8f2a2e] hover:to-[#b9353a] text-white font-medium py-6"
+                className="w-full bg-linear-to-r from-[#af3338] to-[#c9454a] hover:from-[#8f2a2e] hover:to-[#b9353a] text-white font-medium py-6"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
