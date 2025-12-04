@@ -192,14 +192,6 @@ export default function InscriptionPage() {
 
     e.preventDefault();
 
-    if (!window.grecaptcha || !SITE_KEY) {
-      setErrors(prev => ({
-        ...prev,
-        general: 'Le service de vérification (reCAPTCHA) est indisponible. Veuillez réessayer plus tard.',
-      }));
-      return;
-    }
-
     if (!validateForm()) {
       return;
     }
@@ -207,10 +199,6 @@ export default function InscriptionPage() {
     setIsSubmitting(true);
 
     try {
-      
-      const captchaToken = await window.grecaptcha.execute(SITE_KEY, {
-        action: "register",
-      });
 
       const villeFinale =
         formData.ville === 'autre' && formData.autreVille?.trim()
@@ -223,13 +211,16 @@ export default function InscriptionPage() {
         password: formData.password,
         contactNom: formData.contactNom.trim(),
         contactTelephone: formData.contactTelephone.trim(),
-        // captchaToken: captchaToken,
         typeClient: formData.typeClient,
         adresse: formData.adresse.trim(),
         ville: villeFinale,
         pays: formData.pays,
+        // contactFonction": "string",
+        // registreCommerce": "string",
+        // bp": "string",
       };
 
+      console.log(apiData)
       await auth.register(apiData);
       router.push(pathsUtils.otp + '?message=inscription-reussie');
 
@@ -258,11 +249,6 @@ export default function InscriptionPage() {
 
   return (
     <>
-      <script
-        src={`https://www.google.com/recaptcha/enterprise.js?render=${SITE_KEY}`}
-        async
-        defer
-      ></script>
       <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4 py-10">
         <div className="w-full max-w-4xl">
           <div className="bg-white rounded-2xl shadow-xl p-6 md:p-10 space-y-6">
