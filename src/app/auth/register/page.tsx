@@ -207,6 +207,7 @@ export default function InscriptionPage() {
     setIsSubmitting(true);
 
     try {
+      
       const captchaToken = await window.grecaptcha.execute(SITE_KEY, {
         action: "register",
       });
@@ -222,7 +223,7 @@ export default function InscriptionPage() {
         password: formData.password,
         contactNom: formData.contactNom.trim(),
         contactTelephone: formData.contactTelephone.trim(),
-        captchaToken: captchaToken,
+        // captchaToken: captchaToken,
         typeClient: formData.typeClient,
         adresse: formData.adresse.trim(),
         ville: villeFinale,
@@ -231,7 +232,9 @@ export default function InscriptionPage() {
 
       await auth.register(apiData);
       router.push(pathsUtils.otp + '?message=inscription-reussie');
+
     } catch (error: any) {
+
       setErrors(prev => ({
         ...prev,
         general:
@@ -239,6 +242,7 @@ export default function InscriptionPage() {
           "Une erreur est survenue lors de l’inscription. Veuillez réessayer.",
       }));
       console.log(error)
+
     } finally {
       setIsSubmitting(false);
     }
@@ -254,10 +258,11 @@ export default function InscriptionPage() {
 
   return (
     <>
-      <Script
-        src={`https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`}
-        strategy="afterInteractive"
-      />
+      <script
+        src={`https://www.google.com/recaptcha/enterprise.js?render=${SITE_KEY}`}
+        async
+        defer
+      ></script>
       <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4 py-10">
         <div className="w-full max-w-4xl">
           <div className="bg-white rounded-2xl shadow-xl p-6 md:p-10 space-y-6">
