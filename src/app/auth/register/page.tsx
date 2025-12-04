@@ -223,7 +223,7 @@ export default function InscriptionPage() {
         password: formData.password,
         contactNom: formData.contactNom.trim(),
         contactTelephone: formData.contactTelephone.trim(),
-        captchaToken: captchaToken,
+        // captchaToken: captchaToken,
         typeClient: formData.typeClient,
         adresse: formData.adresse.trim(),
         ville: villeFinale,
